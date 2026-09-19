@@ -56,7 +56,7 @@ app/
 └── screens/        UI
 libraries/@mattermost/   native module tự viết (rnutils, rnshare, secure-pdf-viewer…)
 share_extension/         bundle riêng cho Share trên Android (iOS dùng Swift native)
-scripts/                 build_config.js · gen_icons.py · push_doctor.sh · i18n_check.py
+scripts/                 build_config.js · gen_icons.py · push_doctor.sh · i18n_check.py · trace_viewer.mjs
 tdc.sh                   bảng điều khiển terminal
 ```
 
@@ -114,6 +114,9 @@ sdk.dir=/Users/<ten-may>/Library/Android/sdk
 ```
 
 Chọn **Chạy & Debug → Android: build + cài đặt + mở + log gỡ lỗi**. Xong.
+
+Chưa bật máy ảo cũng không sao: script phát hiện không có thiết bị và hỏi
+`Khởi động máy ảo ngay? [Y/n]` — Enter là bật rồi chạy tiếp việc đang làm.
 
 Hoặc làm thủ công:
 
@@ -212,21 +215,24 @@ rồi chờ `Enter`/`q` để quay lại — không bị trôi mất output.
 | 1 | Khởi động Metro ở cửa sổ Terminal mới | `osascript` mở Terminal mới chạy `npm start` (chỉ macOS) — log JS ở cửa sổ đó, bấm `j` để mở React Native DevTools |
 | 2 | Metro ở cửa sổ này (xoá cache) | `npm start -- --reset-cache` |
 | 3 | Tắt Metro (port 8081) | `lsof -ti:8081 \| xargs kill -9` |
-| 4 | Android: build + cài đặt + mở | `adb reverse` rồi `npm run android -- --deviceId=<thiết bị>` |
-| 5 | **Android: build + cài + mở + log gỡ lỗi** | Như trên, build xong xoá buffer logcat rồi bám luôn vào log `TDCDBG` — mục dùng nhiều nhất |
-| 6 | Android: chỉ mở app (không build) | `adb shell am start -n com.thaiduongco.chat/…MainActivity` |
-| 7 | Android: xem log gỡ lỗi | Bám log `TDCDBG` của app đang chạy |
-| 8 | Android: log gỡ lỗi rút gọn | Như trên nhưng ẩn header/body (`TDC_TRACE_SHORT=1`) |
-| 9 | Android: adb reverse 8081 | Mở đường cho thiết bị gọi về Metro trên máy |
-| a | Android: mở dev menu | `adb shell input keyevent 82` |
-| b | **Android: bắt HTTPS qua Proxyman/Charles** | Hỏi địa chỉ proxy (mặc định `10.0.2.2:9090`), ghi vào `settings global http_proxy`, force-stop app |
-| c | Android: tắt proxy | Đặt lại `http_proxy :0` |
-| d | iOS: chạy trên simulator mặc định | `npm run ios` (dùng `Build.Ios.defaultSimulator` nếu có khai trong `config.json`) |
-| e | iOS: chọn simulator rồi chạy | Liệt kê simulator khả dụng từ `xcrun simctl` |
-| f | iOS: chạy trên thiết bị thật | `npm run ios -- --device` |
-| g | iOS: xem log gỡ lỗi (simulator) | `xcrun simctl spawn booted log stream` lọc `TDCDBG` |
+| 4 | **Android: khởi động máy ảo…** | Chọn AVD (một cái thì bật luôn), chờ `sys.boot_completed` rồi gạt màn hình khoá — chỉ chờ đúng máy vừa bật, không nhầm với máy đang cắm |
+| 5 | Android: build + cài đặt + mở | `adb reverse` rồi `npm run android -- --deviceId=<thiết bị>` |
+| 6 | **Android: build + cài + mở + log gỡ lỗi** | Như trên, build xong xoá buffer logcat rồi mở thẳng bộ xem log `TDCDBG` — mục dùng nhiều nhất |
+| 7 | Android: chỉ mở app (không build) | `adb shell am start -n com.thaiduongco.chat/…MainActivity` |
+| 8 | Android: xem log gỡ lỗi | Bộ xem gập/mở cho app đang chạy — xem [mục 7](#7-log-gỡ-lỗi-tdcdbg) |
+| 9 | Android: log gỡ lỗi dạng text | Xả thẳng ra terminal, không giao diện (`TDC_TRACE_PLAIN=1`) |
+| a | Android: adb reverse 8081 | Mở đường cho thiết bị gọi về Metro trên máy |
+| b | Android: mở dev menu | `adb shell input keyevent 82` |
+| c | **Android: bắt HTTPS qua Proxyman/Charles** | Hỏi địa chỉ proxy (mặc định `10.0.2.2:9090`), ghi vào `settings global http_proxy`, force-stop app |
+| d | Android: tắt proxy | Đặt lại `http_proxy :0` |
+| e | iOS: mở simulator… | `xcrun simctl boot` + `open -a Simulator` |
+| f | iOS: chạy trên simulator mặc định | `npm run ios` (dùng `Build.Ios.defaultSimulator` nếu có khai trong `config.json`) |
+| g | iOS: chọn simulator rồi chạy | Liệt kê simulator khả dụng từ `xcrun simctl` |
+| h | iOS: chạy trên thiết bị thật | `npm run ios -- --device` |
+| i | iOS: xem log gỡ lỗi (simulator) | `xcrun simctl spawn booted log stream` lọc `TDCDBG` |
 
 > Có nhiều thiết bị thì script hỏi chọn; chỉ có một thì dùng luôn.
+> **Không có thiết bị nào** thì hỏi `Khởi động máy ảo ngay? [Y/n]` rồi bật giúp, xong chạy tiếp.
 > Các mục Android build/mở app tự chạy `adb reverse` giúp.
 
 ### 6.3 Menu **Build**
@@ -279,16 +285,17 @@ Build xong, script tự in đường dẫn + dung lượng file mới tạo, kè
 |---|---|---|
 | 1 | Danh sách thiết bị | `adb devices -l` |
 | 2 | Danh sách AVD | `emulator -list-avds` |
-| 3 | **Log gỡ lỗi TDC** | Màn hình + API + WebSocket, có tô màu — xem [mục 7](#7-log-gỡ-lỗi-tdcdbg) |
-| 4 | Log JS | `adb logcat *:S ReactNativeJS:V` |
-| 5 | Log toàn bộ app | Theo `pid` của app — gồm cả log native |
-| 6 | Log push notification | Lọc `CustomPushNotification`, `ReactNativeNotifs`, token… |
-| 7 | 200 dòng gần nhất rồi thoát | Dump nhanh, không bám theo |
-| 8 | Xoá buffer logcat | `adb logcat -c` — làm sạch trước khi tái hiện lỗi |
-| 9 | Log iOS simulator | `npx react-native log-ios` |
-| a | Chụp ảnh màn hình | Lưu `screenshot-YYYYmmdd-HHMMSS.png` ở gốc dự án |
-| b | Buộc dừng app | `adb shell am force-stop` |
-| c | **Gỡ app** | ⚠️ Mất session đăng nhập + toàn bộ DB trên máy — phải gõ `go` để xác nhận |
+| 3 | **Khởi động máy ảo…** | Bật AVD rồi chờ Android khởi động xong |
+| 4 | **Log gỡ lỗi TDC** | Màn hình + API + WebSocket, gập/mở từng mục — xem [mục 7](#7-log-gỡ-lỗi-tdcdbg) |
+| 5 | Log JS | `adb logcat *:S ReactNativeJS:V` |
+| 6 | Log toàn bộ app | Theo `pid` của app — gồm cả log native |
+| 7 | Log push notification | Lọc `CustomPushNotification`, `ReactNativeNotifs`, token… |
+| 8 | 200 dòng gần nhất rồi thoát | Dump nhanh, không bám theo |
+| 9 | Xoá buffer logcat | `adb logcat -c` — làm sạch trước khi tái hiện lỗi |
+| a | Log iOS simulator | `npx react-native log-ios` |
+| b | Chụp ảnh màn hình | Lưu `screenshot-YYYYmmdd-HHMMSS.png` ở gốc dự án |
+| c | Buộc dừng app | `adb shell am force-stop` |
+| d | **Gỡ app** | ⚠️ Mất session đăng nhập + toàn bộ DB trên máy — phải gõ `go` để xác nhận |
 
 ### 6.6 Menu **Cấu hình build**
 
@@ -329,6 +336,12 @@ Tiện cho CI, script, hoặc khi đã biết mình cần gì:
 ./tdc.sh ios-sim           # build iOS cho simulator
 ./tdc.sh artifacts         # liệt kê các file .apk/.aab/.ipa đã build
 
+# Máy ảo / simulator
+./tdc.sh emulator          # bật máy ảo Android rồi chờ khởi động xong
+./tdc.sh emulator Pixel_9_Pro   # chỉ đích danh AVD
+./tdc.sh avds              # liệt kê máy ảo đã tạo
+./tdc.sh simulator         # mở iOS simulator
+
 # Chạy
 ./tdc.sh android           # build + cài đặt + mở trên Android
 ./tdc.sh ios               # chạy trên iOS simulator
@@ -336,8 +349,9 @@ Tiện cho CI, script, hoặc khi đã biết mình cần gì:
 ./tdc.sh android-log       # build + cài + mở + bám log gỡ lỗi
 
 # Log & bắt API
-./tdc.sh trace             # log gỡ lỗi: màn hình + API + WebSocket (Android)
-./tdc.sh trace-ios         # như trên, trên iOS simulator
+./tdc.sh trace             # bộ xem log gập/mở: màn hình + API + WebSocket (Android)
+./tdc.sh trace-text        # như trên nhưng xả thẳng ra terminal
+./tdc.sh trace-ios         # bộ xem log trên iOS simulator
 ./tdc.sh proxy 10.0.2.2:9090   # trỏ máy ảo qua Proxyman/Charles
 ./tdc.sh proxy off         # tắt proxy
 ./tdc.sh log               # log JS
@@ -361,7 +375,8 @@ Biến môi trường:
 
 | Biến | Tác dụng |
 |---|---|
-| `TDC_TRACE_SHORT=1` | Ẩn header/body trong log gỡ lỗi, chỉ giữ dòng tóm tắt |
+| `TDC_TRACE_PLAIN=1` | Log gỡ lỗi xả thẳng ra terminal thay vì mở bộ xem gập/mở |
+| `TDC_TRACE_SHORT=1` | Ở chế độ text: ẩn header/body, chỉ giữ dòng tóm tắt |
 | `MATTERMOST_RELEASE_PASSWORD` | Mật khẩu keystore khi build release có ký |
 | `ANDROID_BUILD_TASK=bundle` | Ép lane Fastlane Android build AAB thay vì APK |
 
@@ -379,28 +394,92 @@ Biến môi trường:
 ## 7. Log gỡ lỗi TDCDBG
 
 Bản debug in ra các dòng có tiền tố `TDCDBG` (`app/utils/dev_trace.ts`) cho ba nhóm sự kiện,
-`tdc.sh` lọc và tô màu sẵn:
+kèm header + body đầy đủ của từng request:
 
-| Nhóm | Màu | Nội dung |
-|---|---|---|
-| `NAV` | xanh dương | Màn hình đang mở / chuyển màn hình |
-| `API` | xanh lá (2xx/3xx) · đỏ (4xx/5xx) | Method, đường dẫn, status, thời gian, dung lượng |
-| `WS` | vàng | Sự kiện WebSocket |
-| header/body | xám | Chi tiết request/response — ẩn bằng `TDC_TRACE_SHORT=1` |
+| Nhóm | Màu | Nội dung | Móc vào |
+|---|---|---|---|
+| `NAV` | xanh dương | Màn hình đang mở / chuyển màn hình | `app/store/navigation_store.ts` |
+| `API` | xanh lá (2xx/3xx) · đỏ (4xx/5xx) | Method, đường dẫn, status, thời gian, dung lượng | `app/client/rest/tracking.ts` |
+| `WS` | vàng | Sự kiện WebSocket (open/close/event) | `app/client/websocket/index.ts` |
+| `req.*` `res.*` `ws.data` | xám | Header + body của request/response và payload WebSocket | — |
+
+### 7.1 Bộ xem log — gập/mở từng mục
+
+`./tdc.sh trace` mở `scripts/trace_viewer.mjs`: gom từng request thành một dòng, bấm mở ra
+mới xem chi tiết, JSON tự xuống dòng thụt lề. Chạy bằng Node có sẵn, không thêm dependency.
+
+```
+  TDC trace  128/128 mục  ·  lọc: API  ·  bám đuôi
+▸ API  GET    200   154ms   /api/v4/channels/33o9.../posts?since=1789800240746
+▾ API  PUT    200   713ms   /api/v4/users/sessions/device  [Cold Start]
+    req.headers Authorization: BEARER ng4h59pk4fre8eq1w7q45zwg1c, Accept: application/json
+    res.body {
+               "first_inaccessible_post_time": 0,
+               "posts": {},
+               "order": []
+```
+
+| Phím | Tác dụng |
+|---|---|
+| `↑` `↓` hoặc `k` `j` | Chọn mục |
+| `Enter` | Mở / gập mục đang chọn (`▸` ↔ `▾`) |
+| `e` / `c` | Mở tất cả / gập tất cả |
+| `f` | Lọc theo loại: tất cả → API → WS → NAV |
+| `/` | Tìm trong cả dòng tóm tắt lẫn nội dung chi tiết |
+| `g` / `G` | Về đầu / về cuối (bật lại bám đuôi) |
+| `p` | Tạm dừng bám đuôi (tự dừng khi bạn di chuyển lên) |
+| `x` | Xoá sạch danh sách |
+| `q` | Thoát |
 
 ```bash
 ./tdc.sh trace                      # bám log của app đang chạy
-TDC_TRACE_SHORT=1 ./tdc.sh trace    # chỉ dòng tóm tắt
-./tdc.sh android-log                # build + cài + mở rồi bám log luôn
+./tdc.sh android-log                # build + cài + mở rồi mở bộ xem luôn
+./tdc.sh trace-ios                  # iOS simulator
+./tdc.sh trace-text                 # xả thẳng ra terminal, không giao diện
+TDC_TRACE_SHORT=1 ./tdc.sh trace-text   # text, chỉ dòng tóm tắt
 ```
 
-Token, mật khẩu, cookie và các header nhạy cảm **được che tự động** trước khi in.
-Cần xem header + body đầy đủ dưới dạng GUI thì dùng proxy:
+Pipe ra file thì bộ xem tự chuyển sang in thẳng, không dựng giao diện:
+`./tdc.sh trace > trace.log`.
+
+### 7.2 Bật/tắt từng nhóm
+
+Trong console của React Native DevTools (bấm `j` ở cửa sổ Metro):
+
+```js
+tdcTrace({api: false})        // tắt log API
+tdcTrace({ws: false})         // tắt log WebSocket
+tdcTrace({headers: false})    // bỏ phần header
+tdcTrace({body: false})       // bỏ phần body
+tdcTrace({apiRequest: true})  // in thêm lúc request vừa gửi đi — soi request treo
+tdcTrace({bodyLimit: 20000})  // body dài hơn (mặc định 4000 ký tự)
+```
+
+### 7.3 Lưu ý bảo mật
+
+Log in **nguyên văn** token, cookie và nội dung request/response — tiện gỡ lỗi nhưng
+đừng dán nguyên ra ngoài. Toàn bộ phần này chỉ chạy khi `__DEV__`, và `index.tsx` đặt
+`logToFile: !__DEV__` nên bản debug không ghi log xuống file người dùng xuất được,
+cũng không đẩy lên Sentry. Bản release không sinh dòng `TDCDBG` nào.
+
+### 7.4 Xem dạng GUI — Proxyman / Charles
+
+Cần cây request kiểu Network tab (gập từng header, sửa và gửi lại request) thì trỏ máy ảo
+qua proxy. App tin cả CA do người dùng cài (`android/app/src/main/res/xml/network_security_config.xml`)
+nên không phải sửa gì trong code:
 
 ```bash
-./tdc.sh proxy 10.0.2.2:9090   # Proxyman (Charles: 8888) — nhớ cài CA cert vào máy ảo
+./tdc.sh proxy                 # mặc định 10.0.2.2:9090 (Proxyman)
+./tdc.sh proxy 10.0.2.2:8888   # Charles
 ./tdc.sh proxy off
 ```
+
+Lần đầu nhớ cài chứng chỉ CA của Proxyman/Charles vào máy ảo (Proxyman:
+Certificate → Install on Android Emulator). Lệnh này tự force-stop app, mở lại là có traffic.
+
+> React Native DevTools (bấm `j` ở Metro) có Components + Profiler nhưng **tab Network luôn
+> trống**: app gọi mạng qua `@mattermost/react-native-network-client` (native), không qua
+> `fetch`/XHR. Đó là lý do có `TDCDBG` và đường proxy ở trên.
 
 ---
 

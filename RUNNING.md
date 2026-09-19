@@ -1124,14 +1124,18 @@ kết nối, `adb reverse` đã set chưa, phiên bản + build number + nhánh 
 
 | Menu | Có gì |
 |---|---|
-| **Chạy & Debug** | Metro (cửa sổ Terminal mới / reset cache / kill), Android build+install, mở app không build, `adb reverse`, dev menu, iOS simulator (mặc định / chọn từ danh sách / thiết bị thật) |
+| **Chạy & Debug** | Metro (cửa sổ Terminal mới / reset cache / kill), **khởi động máy ảo**, Android build+install, build+install+**log gỡ lỗi**, mở app không build, xem log gỡ lỗi, `adb reverse`, dev menu, **bắt HTTPS qua Proxyman/Charles**, iOS (mở simulator / chạy mặc định / chọn từ danh sách / thiết bị thật / log gỡ lỗi) |
 | **Build** | APK debug, APK release, **AAB release** (`bundleRelease`, để lên Play Store), các lane Fastlane (APK/AAB/IPA, signed và unsigned), iOS cho simulator, và "Xem các file đã build" kèm dung lượng |
 | **Kiểm tra** | `check`, `check-test`, `lint`, `fix`, `tsc`, `test`, test theo pattern (nhập từ bàn phím), `test:watch`, `test:coverage`, i18n check |
-| **Thiết bị & Log** | liệt kê thiết bị/AVD, log JS, log toàn bộ app theo pid, log push notification, dump 200 dòng, xoá buffer, log iOS, chụp ảnh màn hình, force stop, gỡ app (có bước xác nhận) |
+| **Thiết bị & Log** | liệt kê thiết bị/AVD, **khởi động máy ảo**, **log gỡ lỗi TDCDBG** (gập/mở từng request), log JS, log toàn bộ app theo pid, log push notification, dump 200 dòng, xoá buffer, log iOS, chụp ảnh màn hình, force stop, gỡ app (có bước xác nhận) |
 | **Công cụ dự án** | thông tin môi trường, `push_doctor.sh`, sinh lại icon/splash, đồng bộ assets, `npm install`, `pod install`, `clean`, reset sâu (có xác nhận), `i18n-extract` |
 
 Khi có nhiều thiết bị, các mục Android sẽ hỏi chọn thiết bị trước; chỉ có một thì tự dùng
-luôn. Mục Android build/mở app tự chạy `adb reverse` giúp.
+luôn. Không có thiết bị nào thì script hỏi `Khởi động máy ảo ngay? [Y/n]` rồi bật giúp.
+Mục Android build/mở app tự chạy `adb reverse` giúp.
+
+Log gỡ lỗi `TDCDBG` (màn hình đang mở, API kèm header/body, sự kiện WebSocket) và cách
+bắt HTTPS bằng Proxyman/Charles: xem mục 7 của [`README.md`](README.md).
 
 ## 14.2 Gọi trực tiếp, không qua menu
 
@@ -1143,9 +1147,17 @@ Tiện cho CI hoặc khi đã biết mình cần gì:
 ./tdc.sh aab            # AAB release (gradlew bundleRelease)
 ./tdc.sh ipa            # IPA qua Fastlane
 ./tdc.sh ios-sim        # build iOS cho simulator
+./tdc.sh emulator       # bật máy ảo Android rồi chờ khởi động xong
+./tdc.sh avds           # liệt kê máy ảo đã tạo
+./tdc.sh simulator      # mở iOS simulator
 ./tdc.sh android        # build + cài đặt + mở trên Android
+./tdc.sh android-log    # build + cài + mở rồi mở bộ xem log gỡ lỗi
 ./tdc.sh ios            # chạy trên iOS simulator
 ./tdc.sh metro          # Metro (reset cache)
+./tdc.sh trace          # bộ xem log gỡ lỗi: màn hình + API + WebSocket
+./tdc.sh trace-text     # như trên, xả thẳng ra terminal
+./tdc.sh trace-ios      # bộ xem log trên iOS simulator
+./tdc.sh proxy          # trỏ máy ảo qua Proxyman/Charles (proxy off để tắt)
 ./tdc.sh log            # log JS
 ./tdc.sh log-push       # log push notification
 ./tdc.sh check          # lint + tsc
