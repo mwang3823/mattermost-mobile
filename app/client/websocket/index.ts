@@ -242,7 +242,7 @@ export default class WebSocketClient {
 
         this.conn!.onClose((ev) => {
             const closeCode = ev.message && typeof ev.message === 'object' && 'code' in ev.message ? ev.message.code : undefined;
-            traceWebSocket('CLOSE', `code=${closeCode ?? '-'}`);
+            traceWebSocket('CLOSE', `code=${closeCode ?? '-'}`, ev.message);
             clearTimeout(this.connectionTimeout);
             clearInterval(this.pingInterval);
 
@@ -314,7 +314,7 @@ export default class WebSocketClient {
         this.conn!.onMessage((evt: any) => {
             const msg = evt.message;
 
-            traceWebSocket(msg.event || (msg.seq_reply ? 'seq_reply' : 'unknown'), msg.broadcast?.channel_id ? `channel=${msg.broadcast.channel_id}` : '');
+            traceWebSocket(msg.event || (msg.seq_reply ? 'seq_reply' : 'unknown'), msg.broadcast?.channel_id ? `channel=${msg.broadcast.channel_id}` : '', msg);
 
             // This indicates a reply to a websocket request.
             // We ignore sequence number validation of message responses

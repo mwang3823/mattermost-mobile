@@ -21,15 +21,11 @@ const flags: DevTraceFlags = {
     apiRequest: false,
     headers: true,
     body: true,
-    bodyLimit: 1200,
+    bodyLimit: 4000,
     ws: true,
 };
 
 export const devTraceEnabled: boolean = __DEV__ && !Platform.isTesting;
-
-const SENSITIVE_PARAMS = new Set(['token', 'access_token', 'password', 'secret', 'code', 'key']);
-const SENSITIVE_HEADERS = new Set(['authorization', 'cookie', 'set-cookie', 'token', 'x-csrf-token', 'x-mattermost-preauth-secret']);
-const SENSITIVE_FIELDS = new Set(['password', 'current_password', 'new_password', 'token', 'access_token', 'refresh_token', 'secret', 'device_id', 'id_token']);
 
 const write = (line: string) => {
     // eslint-disable-next-line no-console
@@ -59,42 +55,15 @@ const formatSize = (bytes?: number) => {
     return `${(bytes / (1024 * 1024)).toFixed(1)}MB`;
 };
 
-// Bỏ scheme + host và che giá trị của các tham số nhạy cảm (log có thể được người dùng xuất ra)
-const cleanUrl = (url: string) => {
-    const relative = url.replace(/^https?:\/\/[^/]+/, '');
-    const [path, query] = relative.split('?');
-    if (!query) {
-        return path;
-    }
-    const safeQuery = query.split('&').map((param) => {
-        const [name, value] = param.split('=');
-        return value && SENSITIVE_PARAMS.has(name.toLowerCase()) ? `${name}=***` : param;
-    }).join('&');
-    return `${path}?${safeQuery}`;
-};
+// Bỏ scheme + host cho gọn dòng log
+const cleanUrl = (url: string) => url.replace(/^https?:\/\/[^/]+/, '');
 
-const redactHeaders = (headers?: Record<string, string>) => {
+const formatHeaders = (headers?: Record<string, string>) => {
     if (!headers) {
         return '-';
     }
-    const safe = Object.entries(headers).map(([name, value]) => {
-        return `${name}: ${SENSITIVE_HEADERS.has(name.toLowerCase()) ? '***' : value}`;
-    });
-    return safe.length ? safe.join(', ') : '-';
-};
-
-const redactValues = (value: unknown): unknown => {
-    if (Array.isArray(value)) {
-        return value.map(redactValues);
-    }
-    if (value && typeof value === 'object') {
-        const out: Record<string, unknown> = {};
-        for (const [name, nested] of Object.entries(value as Record<string, unknown>)) {
-            out[name] = SENSITIVE_FIELDS.has(name.toLowerCase()) ? '***' : redactValues(nested);
-        }
-        return out;
-    }
-    return value;
+    const entries = Object.entries(headers).map(([name, value]) => `${name}: ${value}`);
+    return entries.length ? entries.join(', ') : '-';
 };
 
 const formatBody = (body: unknown) => {
@@ -103,7 +72,7 @@ const formatBody = (body: unknown) => {
     }
     let text: string;
     try {
-        text = typeof body === 'string' ? body : JSON.stringify(redactValues(body));
+        text = typeof body === 'string' ? body : JSON.stringify(body);
     } catch (error) {
         return '<không stringify được>';
     }
@@ -125,13 +94,13 @@ export function traceApiPayload({requestHeaders, requestBody, responseHeaders, r
         return;
     }
     if (flags.headers) {
-        write(`     req.headers ${redactHeaders(requestHeaders)}`);
+        write(`     req.headers ${formatHeaders(requestHeaders)}`);
     }
     if (flags.body) {
         write(`     req.body    ${formatBody(requestBody)}`);
     }
     if (flags.headers && responseHeaders) {
-        write(`     res.headers ${redactHeaders(responseHeaders)}`);
+        write(`     res.headers ${formatHeaders(responseHeaders)}`);
     }
     if (flags.body && responseBody !== undefined) {
         write(`     res.body    ${formatBody(responseBody)}`);
@@ -174,11 +143,14 @@ export function traceApiError(method = 'get', url: string, startedAt: number, st
     write(`API  ${pad(method.toUpperCase(), 6)} ${status ?? 'ERR'} ${padStart(`${Date.now() - startedAt}ms`, 7)} ${pad('', 8)} ${cleanUrl(url)}  <- request failed`);
 }
 
-export function traceWebSocket(event: string, detail?: string) {
+export function traceWebSocket(event: string, detail?: string, payload?: unknown) {
     if (!devTraceEnabled || !flags.ws) {
         return;
     }
     write(`WS   ${pad(event, 32)}${detail ?? ''}`);
+    if (flags.body && payload !== undefined) {
+        write(`     ws.data     ${formatBody(payload)}`);
+    }
 }
 
 if (devTraceEnabled) {

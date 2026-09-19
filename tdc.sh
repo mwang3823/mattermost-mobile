@@ -490,9 +490,20 @@ pick_device() {
     local d
     while IFS= read -r d; do [ -n "$d" ] && ds+=("$d"); done < <(adb_devices)
     if [ ${#ds[@]} -eq 0 ]; then
-        printf '\n%s  Không có thiết bị/emulator nào đang chạy.%s\n' "$YLW" "$R"
-        printf '  Khởi động emulator: %semulator -list-avds%s rồi %semulator -avd <tên>%s\n' "$B" "$R" "$B" "$R"
-        pause; return 1
+        printf '\n%s  Không có thiết bị/emulator nào đang chạy.%s\n\n' "$YLW" "$R"
+        printf '  Khởi động máy ảo ngay? [%sY%s/n] ' "$B" "$R"
+        local ans
+        read -r ans </dev/tty
+        case "$ans" in
+            [nN]*) return 1 ;;
+        esac
+        avd_pick || return 1
+        emulator_boot "$AVD" || { pause; return 1; }
+        [ -z "$DEV" ] && DEV=$(adb_devices | head -1)
+        if [ -z "$DEV" ]; then
+            pause; return 1
+        fi
+        return 0
     fi
     if [ ${#ds[@]} -eq 1 ]; then DEV=${ds[0]}; return 0; fi
     choose_back "Chọn thiết bị" "${ds[@]}"
@@ -521,6 +532,72 @@ metro_kill() {
         printf '\n%s  Metro không chạy.%s\n' "$DIM" "$R"; pause; return
     fi
     run "Tắt Metro (pid $p)" bash -c "lsof -ti:$METRO_PORT | xargs kill -9"
+}
+
+# --------------------------------------------------------- máy ảo Android
+AVD=''
+avd_pick() {
+    AVD=''
+    if ! command -v emulator >/dev/null 2>&1; then
+        printf '\n%s  Không tìm thấy lệnh "emulator". Thêm vào PATH:%s\n' "$RED" "$R"
+        printf '    export PATH=$PATH:~/Library/Android/sdk/emulator\n'
+        pause; return 1
+    fi
+    local -a avds
+    local a
+    while IFS= read -r a; do [ -n "$a" ] && avds+=("$a"); done < <(emulator -list-avds 2>/dev/null)
+    if [ ${#avds[@]} -eq 0 ]; then
+        printf '\n%s  Chưa có máy ảo nào.%s Tạo ở Android Studio: Device Manager → Create Device.\n' "$YLW" "$R"
+        pause; return 1
+    fi
+    if [ ${#avds[@]} -eq 1 ]; then AVD=${avds[0]}; return 0; fi
+    choose_back "Chọn máy ảo" "${avds[@]}"
+    [ "$CHOICE" -lt 0 ] && return 1
+    AVD=${avds[$CHOICE]}
+    return 0
+}
+
+# Bật máy ảo rồi chờ Android khởi động xong. Chỉ chờ đúng serial mới xuất hiện
+# để không nhầm với thiết bị đang cắm sẵn. Đặt DEV nếu thành công.
+emulator_boot() {
+    local avd=$1 before s new waited=0
+    before=" $(adb_devices | tr '\n' ' ')"
+    printf '  Đang bật %s%s%s — cửa sổ máy ảo sẽ hiện ra...\n' "$B" "$avd" "$R"
+    nohup emulator -avd "$avd" >/dev/null 2>&1 &
+    disown 2>/dev/null
+    while [ $waited -lt 240 ]; do
+        new=''
+        for s in $(adb devices 2>/dev/null | awk '/\t(device|offline)$/{print $1}'); do
+            case "$before" in *" $s "*) ;; *) new=$s ;; esac
+        done
+        if [ -n "$new" ] && [ "$(adb -s "$new" shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" = "1" ]; then
+            adb -s "$new" shell input keyevent 82 >/dev/null 2>&1
+            DEV=$new
+            printf '  %sMáy ảo %s đã sẵn sàng (%ds).%s\n' "$GRN" "$new" "$waited" "$R"
+            return 0
+        fi
+        sleep 3
+        waited=$((waited + 3))
+        printf '  %sđang chờ Android khởi động... %ds%s\r' "$DIM" "$waited" "$R"
+    done
+    printf '\n  %sChờ quá lâu — xem cửa sổ máy ảo xem có kẹt không.%s\n' "$YLW" "$R"
+    return 1
+}
+
+emulator_start() {
+    avd_pick || return 1
+    printf '\033[H\033[2J'
+    printf '%s  Khởi động máy ảo%s\n\n' "${B}${CYN}" "$R"
+    emulator_boot "$AVD"
+    pause
+}
+
+ios_sim_open() {
+    ios_sim_pick || return
+    run "Mở simulator \"$SIM\"" bash -c "
+        xcrun simctl boot '$SIM' 2>/dev/null
+        open -a Simulator
+        echo 'Đã mở $SIM.'"
 }
 
 android_run() {
@@ -564,20 +641,25 @@ trace_header() {
     printf '%s  Ẩn header/body: TDC_TRACE_SHORT=1 ./tdc.sh trace   ·   trong app: tdcTrace({body:false})%s\n\n' "$DIM" "$R"
 }
 
+# Bộ xem log có gập/mở từng mục (scripts/trace_viewer.mjs). Đặt TDC_TRACE_PLAIN=1
+# để quay về dạng text chạy thẳng.
 android_trace() {
     pick_device || return
+    if [ -n "${TDC_TRACE_PLAIN:-}" ]; then
+        run "Log gỡ lỗi (text) trên $DEV" bash -c "
+            $(declare -f trace_colorize trace_header)
+            trace_header
+            adb -s '$DEV' logcat -v brief '*:S' ReactNativeJS:V | trace_colorize"
+        return
+    fi
     run "Log gỡ lỗi trên $DEV" bash -c "
-        $(declare -f trace_colorize trace_header)
-        trace_header
-        adb -s '$DEV' logcat -v brief '*:S' ReactNativeJS:V | trace_colorize"
+        adb -s '$DEV' logcat -v brief '*:S' ReactNativeJS:V | node '$ROOT/scripts/trace_viewer.mjs'"
 }
 
 ios_trace() {
     run "Log gỡ lỗi trên iOS simulator" bash -c "
-        $(declare -f trace_colorize trace_header)
-        trace_header
         xcrun simctl spawn booted log stream --style compact \
-            --predicate 'eventMessage CONTAINS \"TDCDBG\"' | trace_colorize"
+            --predicate 'eventMessage CONTAINS \"TDCDBG\"' | node '$ROOT/scripts/trace_viewer.mjs'"
 }
 
 # Build + cài + mở, rồi bám luôn vào log gỡ lỗi
@@ -586,12 +668,9 @@ android_run_trace() {
     need_adb || return
     adb -s "$DEV" reverse "tcp:$METRO_PORT" "tcp:$METRO_PORT" >/dev/null 2>&1
     run "Build + cài + log gỡ lỗi trên $DEV" bash -c "
-        $(declare -f trace_colorize trace_header)
         npm run android -- --deviceId='$DEV' || exit 1
         adb -s '$DEV' logcat -c
-        printf '\n'
-        trace_header
-        adb -s '$DEV' logcat -v brief '*:S' ReactNativeJS:V | trace_colorize"
+        adb -s '$DEV' logcat -v brief '*:S' ReactNativeJS:V | node '$ROOT/scripts/trace_viewer.mjs'"
 }
 
 # Trỏ toàn bộ traffic của máy ảo qua Proxyman/Charles để xem header + body dạng GUI.
@@ -670,17 +749,19 @@ menu_debug() {
             "Metro ở cửa sổ này (xoá cache)" \
             "Tắt Metro (port $METRO_PORT)" \
             "-" \
+            "Android: khởi động máy ảo..." \
             "Android: build + cài đặt + mở" \
             "Android: build + cài đặt + mở + log gỡ lỗi  ← màn hình, API, WS" \
             "Android: chỉ mở app (không build)" \
             "Android: xem log gỡ lỗi (app đang chạy)" \
-            "Android: log gỡ lỗi rút gọn (ẩn header/body)" \
+            "Android: log gỡ lỗi dạng text (không gập/mở)" \
             "Android: adb reverse $METRO_PORT" \
             "Android: mở dev menu" \
             "-" \
             "Android: bắt HTTPS qua Proxyman/Charles..." \
             "Android: tắt proxy" \
             "-" \
+            "iOS: mở simulator..." \
             "iOS: chạy trên simulator mặc định" \
             "iOS: chọn simulator rồi chạy" \
             "iOS: chạy trên thiết bị thật" \
@@ -690,19 +771,21 @@ menu_debug() {
             0) apply_config && metro_new_window ;;
             1) apply_config && run "Metro (xoá cache) — Ctrl+C để dừng" npm start -- --reset-cache ;;
             2) metro_kill ;;
-            4) apply_config && android_run ;;
-            5) apply_config && android_run_trace ;;
-            6) android_open ;;
-            7) android_trace ;;
-            8) TDC_TRACE_SHORT=1 android_trace ;;
-            9) android_reverse ;;
-            10) pick_device && run "Mở dev menu trên $DEV" adb -s "$DEV" shell input keyevent 82 ;;
-            12) proxy_prompt ;;
-            13) device_proxy off ;;
-            15) apply_config && ios_run_default ;;
-            16) apply_config && ios_run_pick ;;
-            17) apply_config && run "Chạy iOS trên thiết bị thật" npm run ios -- --device ;;
-            18) ios_trace ;;
+            4) emulator_start ;;
+            5) apply_config && android_run ;;
+            6) apply_config && android_run_trace ;;
+            7) android_open ;;
+            8) android_trace ;;
+            9) TDC_TRACE_PLAIN=1 TDC_TRACE_SHORT=1 android_trace ;;
+            10) android_reverse ;;
+            11) pick_device && run "Mở dev menu trên $DEV" adb -s "$DEV" shell input keyevent 82 ;;
+            13) proxy_prompt ;;
+            14) device_proxy off ;;
+            16) ios_sim_open ;;
+            17) apply_config && ios_run_default ;;
+            18) apply_config && ios_run_pick ;;
+            19) apply_config && run "Chạy iOS trên thiết bị thật" npm run ios -- --device ;;
+            20) ios_trace ;;
         esac
     done
 }
@@ -818,6 +901,7 @@ menu_log() {
         choose_back "Thiết bị & Log" \
             "Danh sách thiết bị" \
             "Danh sách AVD (emulator)" \
+            "Khởi động máy ảo..." \
             "-" \
             "Log gỡ lỗi TDC  (màn hình + API + WS)" \
             "Log JS          (ReactNativeJS)" \
@@ -835,23 +919,24 @@ menu_log() {
             -1) return ;;
             0) need_adb && run "adb devices" adb devices -l ;;
             1) run "emulator -list-avds" bash -c "emulator -list-avds 2>/dev/null || echo 'không tìm thấy emulator trong PATH'" ;;
-            3) android_trace ;;
-            4) pick_device && run "Log JS — Ctrl+C để dừng" adb -s "$DEV" logcat "*:S" ReactNativeJS:V ;;
-            5) pick_device && run "Log toàn bộ app — Ctrl+C để dừng" \
+            2) emulator_start ;;
+            4) android_trace ;;
+            5) pick_device && run "Log JS — Ctrl+C để dừng" adb -s "$DEV" logcat "*:S" ReactNativeJS:V ;;
+            6) pick_device && run "Log toàn bộ app — Ctrl+C để dừng" \
                    bash -c "p=\$(adb -s '$DEV' shell pidof -s $PKG | tr -d '\r'); \
                             if [ -z \"\$p\" ]; then echo 'app không chạy'; else adb -s '$DEV' logcat --pid=\$p; fi" ;;
-            6) pick_device && run "Log push notification — Ctrl+C để dừng" \
+            7) pick_device && run "Log push notification — Ctrl+C để dừng" \
                    bash -c "adb -s '$DEV' logcat | grep --line-buffered -E \
                      'PushNotifications\.|CustomPushNotification|ReactNativeNotifs|canReceiveNotifications|Notification token'" ;;
-            7) pick_device && run "200 dòng log gần nhất" \
+            8) pick_device && run "200 dòng log gần nhất" \
                    bash -c "adb -s '$DEV' logcat -d -t 200 '*:S' ReactNativeJS:V CustomPushNotification:V" ;;
-            8) pick_device && run "Xoá buffer logcat" adb -s "$DEV" logcat -c ;;
-            10) run "Log iOS — Ctrl+C để dừng" npx react-native log-ios ;;
-            12) pick_device && run "Chụp ảnh màn hình" bash -c "
+            9) pick_device && run "Xoá buffer logcat" adb -s "$DEV" logcat -c ;;
+            11) run "Log iOS — Ctrl+C để dừng" npx react-native log-ios ;;
+            13) pick_device && run "Chụp ảnh màn hình" bash -c "
                     out='$ROOT/screenshot-\$(date +%Y%m%d-%H%M%S).png'
                     adb -s '$DEV' exec-out screencap -p > \"\$out\" && echo \"Đã lưu: \${out#$ROOT/}\"" ;;
-            13) pick_device && run "Buộc dừng $PKG" adb -s "$DEV" shell am force-stop "$PKG" ;;
-            14)
+            14) pick_device && run "Buộc dừng $PKG" adb -s "$DEV" shell am force-stop "$PKG" ;;
+            15)
                 pick_device || continue
                 printf '\n%s  Gỡ app sẽ XOÁ session đăng nhập và toàn bộ DB trên máy.%s\n' "$YLW" "$R"
                 printf '  Nhập %sgo%s để xác nhận: ' "$B" "$R"
@@ -990,11 +1075,15 @@ Lệnh:
   ${B}aab${R}                    AAB release (gradlew bundleRelease)
   ${B}ipa${R}                    IPA qua Fastlane
   ${B}ios-sim${R}                build iOS cho simulator
+  ${B}emulator [tên]${R}         bật máy ảo Android rồi chờ khởi động xong
+  ${B}avds${R}                   liệt kê máy ảo Android đã tạo
+  ${B}simulator [tên]${R}        mở iOS simulator
   ${B}android${R}                build + cài đặt + mở trên Android
   ${B}ios${R}                    chạy trên iOS simulator
   ${B}metro${R}                  khởi động Metro (xoá cache)
   ${B}android-log${R}            build + cài đặt + mở + bám log gỡ lỗi (Android)
-  ${B}trace${R}                  log gỡ lỗi: màn hình + API + WebSocket (Android)
+  ${B}trace${R}                  log gỡ lỗi gập/mở được: màn hình + API + WebSocket (Android)
+  ${B}trace-text${R}             log gỡ lỗi dạng text chạy thẳng
   ${B}trace-ios${R}              log gỡ lỗi trên iOS simulator
   ${B}proxy [host:port|off]${R}  trỏ máy ảo qua Proxyman/Charles để xem header + body
   ${B}log${R}                    xem log JS
@@ -1053,8 +1142,17 @@ direct() {
                      adb reverse "tcp:$METRO_PORT" "tcp:$METRO_PORT" >/dev/null 2>&1
                      npm run android || exit 1
                      adb logcat -c
-                     trace_header
-                     adb logcat -v brief "*:S" ReactNativeJS:V | trace_colorize ;;
+                     adb logcat -v brief "*:S" ReactNativeJS:V | node "$ROOT/scripts/trace_viewer.mjs" ;;
+        emulator)    trap - EXIT; need_adb || exit 1
+                     if [ -n "${2:-}" ]; then AVD=$2; else avd_pick || exit 1; fi
+                     emulator_boot "$AVD" ;;
+        avds)        trap - EXIT
+                     emulator -list-avds 2>/dev/null || { echo 'không tìm thấy emulator trong PATH'; exit 1; } ;;
+        simulator)   trap - EXIT
+                     if [ -n "${2:-}" ]; then SIM=$2; else ios_sim_pick || exit 1; fi
+                     xcrun simctl boot "$SIM" 2>/dev/null
+                     open -a Simulator
+                     echo "Đã mở $SIM." ;;
         proxy)       trap - EXIT; need_adb || exit 1
                      if [ "${2:-}" = "off" ]; then
                          adb shell settings put global http_proxy :0
@@ -1065,11 +1163,13 @@ direct() {
                      fi
                      adb shell am force-stop "$PKG" ;;
         trace)       trap - EXIT; need_adb || exit 1
+                     adb logcat -v brief "*:S" ReactNativeJS:V | node "$ROOT/scripts/trace_viewer.mjs" ;;
+        trace-text)  trap - EXIT; need_adb || exit 1
                      trace_header
                      adb logcat -v brief "*:S" ReactNativeJS:V | trace_colorize ;;
-        trace-ios)   trap - EXIT; trace_header
+        trace-ios)   trap - EXIT
                      xcrun simctl spawn booted log stream --style compact \
-                         --predicate 'eventMessage CONTAINS "TDCDBG"' | trace_colorize ;;
+                         --predicate 'eventMessage CONTAINS "TDCDBG"' | node "$ROOT/scripts/trace_viewer.mjs" ;;
         log)         need_adb && adb logcat "*:S" ReactNativeJS:V ;;
         log-push)    need_adb && adb logcat | grep --line-buffered -E \
                          'PushNotifications\.|CustomPushNotification|ReactNativeNotifs|canReceiveNotifications|Notification token' ;;
