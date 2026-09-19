@@ -1,6 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
+import {Image} from 'expo-image';
 import React from 'react';
 import {View} from 'react-native';
 
@@ -9,12 +10,22 @@ import {useIsTablet} from '@hooks/device';
 import {changeOpacity, makeStyleSheetFromTheme} from '@utils/theme';
 import {typography} from '@utils/typography';
 
+const brandLogo = require('@assets/images/tdc_logo.png');
+
+// Kich thuoc that cua phan noi dung trong tdc_logo.png (1691 x 818)
+const LOGO_ASPECT_RATIO = 1691 / 818;
+
 type Props = {
     additionalServer: boolean;
     theme: Theme;
 };
 
 const getStyleSheet = makeStyleSheetFromTheme((theme: Theme) => ({
+    logo: {
+        width: 220,
+        aspectRatio: LOGO_ASPECT_RATIO,
+        marginBottom: 8,
+    },
     textContainer: {
         marginBottom: 32,
         maxWidth: 600,
@@ -69,6 +80,12 @@ const ServerHeader = ({additionalServer, theme}: Props) => {
 
     return (
         <View style={styles.textContainer}>
+            <Image
+                source={brandLogo}
+                style={styles.logo}
+                contentFit='contain'
+                testID='server_header.logo'
+            />
             {!additionalServer &&
             <FormattedText
                 defaultMessage='Welcome'

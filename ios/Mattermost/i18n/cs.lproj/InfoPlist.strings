@@ -1,0 +1,11 @@
+NSAppleMusicUsageDescription = "Povolení přístupu k vaší mediální knihovně znamená, že můžete připojovat soubory z vaší mediální knihovny k vašim zprávám v Mattermost.";
+NSBluetoothAlwaysUsageDescription = "Povolení přístupu k Bluetooth znamená, že můžeme synchronizovat obsah mezi vašimi zařízeními a klienty.";
+NSBluetoothPeripheralUsageDescription = "Povolení přístupu k Bluetooth znamená, že se můžeme připojit k audio periferiím pro hovory a synchronizovat obsah mezi vašimi zařízeními a klienty.";
+NSCameraUsageDescription = "Povolení přístupu k vaší kameře vám umožňuje pořizovat fotografie nebo videa a připojovat je k zprávám.";
+NSFaceIDUsageDescription = "Povolení přístupu k vašemu Face ID znamená, že můžeme omezit přístup neautorizovaných uživatelů k Mattermost na vašem zařízení.";
+NSLocationAlwaysUsageDescription = "Povolení přístupu k vašim údajům o poloze znamená, že můžeme přidávat metadata o poloze k fotografiím a videím, které sdílíte v Mattermost.";
+NSLocationWhenInUseUsageDescription = "Povolení přístupu k vašim údajům o poloze znamená, že můžeme přidávat metadata o poloze k fotografiím a videím, které sdílíte v Mattermost.";
+NSMicrophoneUsageDescription = "Povolení přístupu k mikrofonům vašeho zařízení znamená, že můžete zachytávat audio pro hovory nebo videa, která budete sdílet v Mattermost.";
+NSPhotoLibraryAddUsageDescription = "Povolení přístupu pro zápis do vaší knihovny fotografií znamená, že můžete ukládat stažené fotografie a videa z Mattermost na vaše zařízení.";
+NSPhotoLibraryUsageDescription = "Povolení přístupu k vaší knihovně fotografií vám umožňuje vybrat fotografie nebo videa a připojit je k zprávám.";
+NSSpeechRecognitionUsageDescription = "Povolení vašemu zařízení odesílat uživatelská data společnosti Apple znamená, že můžete odesílat hlasové zprávy do Mattermost.";

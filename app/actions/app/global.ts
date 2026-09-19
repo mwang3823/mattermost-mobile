@@ -119,6 +119,10 @@ export const removePushDisabledInServerAcknowledged = async (serverUrl: string) 
     return storeGlobal(`${GLOBAL_IDENTIFIERS.PUSH_DISABLED_ACK}${serverUrl}`, null, false);
 };
 
+export const storePushProxyAlertsEnabled = async (enabled: boolean) => {
+    return storeGlobal(GLOBAL_IDENTIFIERS.PUSH_PROXY_ALERTS, enabled ? 'true' : null, false);
+};
+
 export const storePushSigningKey = async (serverUrl: string, key: string) => {
     return storeGlobal(`${GLOBAL_IDENTIFIERS.PUSH_SIGNING_KEY}${serverUrl}`, key, false);
 };

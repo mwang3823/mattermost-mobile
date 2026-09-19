@@ -52,6 +52,12 @@ class CustomPushNotification(
         val serverUrl = addServerUrlToBundle(initialData)
         Network.init(mContext)
 
+        // First entry point when FCM delivers a push; runs even when the app has been killed.
+        TurboLog.i("CustomPushNotification",
+                "onReceived type=$type channelId=$channelId postId=$postId ackId=$ackId " +
+                        "notificationId=$notificationId idLoaded=$isIdLoaded " +
+                        "serverResolved=${serverUrl != null} hasSignature=${signature != null}")
+
         GlobalScope.launch {
             try {
                 handlePushNotificationInCoroutine(serverUrl, type, channelId, ackId, isIdLoaded, notificationId, postId, signature)
@@ -104,7 +110,10 @@ class CustomPushNotification(
         val currentActivityName = mAppLifecycleFacade.runningReactContext?.currentActivity?.componentName?.className ?: ""
         val isAppVisible = mAppLifecycleFacade.isAppVisible()
         val isMainActivity = currentActivityName.contains("MainActivity")
-        TurboLog.i("CustomPushNotification", currentActivityName)
+        TurboLog.i("CustomPushNotification",
+                "finishProcessing type=$type channelId=$channelId notificationId=$notificationId " +
+                        "reactInit=$isReactInit appVisible=$isAppVisible mainActivity=$isMainActivity " +
+                        "activity=$currentActivityName")
 
         when (type) {
             CustomPushNotificationHelper.PUSH_TYPE_MESSAGE -> {

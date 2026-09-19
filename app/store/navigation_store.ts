@@ -4,6 +4,8 @@
 import {useEffect, useState} from 'react';
 import {BehaviorSubject} from 'rxjs';
 
+import {traceNavigation} from '@utils/dev_trace';
+
 import type {NavigationState as ExpoNavigationState, NavigationRoute, ParamListBase} from '@react-navigation/native';
 import type {AvailableScreens} from '@typings/screens/navigation';
 
@@ -75,6 +77,7 @@ class NavigationStoreSingleton {
 
             // Update the current screen if it changed
             if (visibleScreen !== prevVisibleScreen) {
+                traceNavigation(visibleScreen, prevVisibleScreen, screenStack);
                 this.screenSubject.next(visibleScreen);
             }
         }

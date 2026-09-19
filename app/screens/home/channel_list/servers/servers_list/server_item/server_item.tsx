@@ -37,9 +37,10 @@ import type {Subscription} from 'rxjs';
 type Props = {
     highlight: boolean;
     isActive: boolean;
+    pushAlertEnabled: boolean;
+    pushProxyStatus: string;
     server: ServersModel;
     tutorialWatched: boolean;
-    pushProxyStatus: string;
 }
 
 type BadgeValues = {
@@ -139,9 +140,10 @@ const getStyleSheet = makeStyleSheetFromTheme((theme: Theme) => ({
 const ServerItem = ({
     highlight,
     isActive,
+    pushAlertEnabled,
+    pushProxyStatus,
     server,
     tutorialWatched,
-    pushProxyStatus,
 }: Props) => {
     const intl = useIntl();
     const theme = useTheme();
@@ -324,8 +326,10 @@ const ServerItem = ({
     const serverItem = `server_list.server_item.${server.displayName.replace(/ /g, '_').toLocaleLowerCase()}`;
     const serverItemTestId = isActive ? `${serverItem}.active` : `${serverItem}.inactive`;
 
+    const showPushAlert = pushAlertEnabled && server.persistenceFlag !== 'wiped' && pushProxyStatus !== PUSH_PROXY_STATUS_VERIFIED;
+
     let pushAlertText;
-    if (server.lastActiveAt) {
+    if (showPushAlert && server.lastActiveAt) {
         if (pushProxyStatus === PUSH_PROXY_STATUS_NOT_AVAILABLE) {
             pushAlertText = intl.formatMessage({
                 id: 'server_list.push_proxy_error',
@@ -391,7 +395,7 @@ const ServerItem = ({
                                     >
                                         {displayName}
                                     </Text>
-                                    {server.lastActiveAt > 0 && server.persistenceFlag !== 'wiped' && pushProxyStatus !== PUSH_PROXY_STATUS_VERIFIED && (
+                                    {showPushAlert && server.lastActiveAt > 0 && (
                                         <CompassIcon
                                             name='alert-outline'
                                             color={theme.errorTextColor}
@@ -421,12 +425,11 @@ const ServerItem = ({
                     </RectButton>
                 </View>
             </Swipeable>
-            {Boolean(pushAlertText && server.persistenceFlag !== 'wiped' && pushProxyStatus !== PUSH_PROXY_STATUS_VERIFIED) && (
+            {Boolean(pushAlertText) && (
                 <Text style={styles.pushAlertText}>
                     {pushAlertText}
                 </Text>
             )}
-
             {server.lastActiveAt > 0 &&
             <WebSocket
                 serverUrl={server.url}

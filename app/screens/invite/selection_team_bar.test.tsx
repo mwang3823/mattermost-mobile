@@ -5,7 +5,6 @@ import React, {type ComponentProps} from 'react';
 import Share from 'react-native-share';
 
 import TeamIcon from '@components/team_sidebar/team_list/team_item/team_icon';
-import {useServerDisplayName} from '@context/server';
 import {act, fireEvent, renderWithIntl, waitFor} from '@test/intl-test-helper';
 
 import SelectionTeamBar from './selection_team_bar';
@@ -15,10 +14,6 @@ jest.mock('react-native-share', () => ({
     default: {
         open: jest.fn(),
     },
-}));
-
-jest.mock('@context/server', () => ({
-    useServerDisplayName: jest.fn(),
 }));
 
 jest.mock('@screens/navigation', () => ({
@@ -36,11 +31,9 @@ jest.mocked(TeamIcon).mockImplementation(
 describe('SelectionTeamBar', () => {
     const mockOnLayoutContainer = jest.fn();
     const mockOnClose = jest.fn().mockResolvedValue(undefined);
-    const mockServerDisplayName = 'Test Server';
 
     beforeEach(() => {
         jest.clearAllMocks();
-        jest.mocked(useServerDisplayName).mockReturnValue(mockServerDisplayName);
         jest.mocked(Share.open).mockResolvedValue({success: true} as Awaited<ReturnType<typeof Share.open>>);
     });
 
@@ -64,10 +57,19 @@ describe('SelectionTeamBar', () => {
         );
 
         expect(getByText('Test Team')).toBeTruthy();
-        expect(getByText(mockServerDisplayName)).toBeTruthy();
         expect(getByText('Share link')).toBeTruthy();
         expect(getByTestId('invite.team_icon')).toBeTruthy();
         expect(getByTestId('invite.share_link.button')).toBeTruthy();
+    });
+
+    it('should not show the server name, which is the bare server URL in this build', () => {
+        const props = getBaseProps();
+
+        const {queryByTestId} = renderWithIntl(
+            <SelectionTeamBar {...props}/>,
+        );
+
+        expect(queryByTestId('invite.server_display_name')).toBeNull();
     });
 
     it('handles share link press', async () => {

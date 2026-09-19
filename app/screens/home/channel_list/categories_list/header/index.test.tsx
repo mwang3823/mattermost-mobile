@@ -56,6 +56,7 @@ describe('ChannelListHeader Index', () => {
         expect(component).toBeTruthy();
         expect(component.props.displayName).toBeUndefined();
         expect(component.props.pushProxyStatus).toBe(PUSH_PROXY_STATUS_UNKNOWN);
+        expect(component.props.pushAlertEnabled).toBe(false); // Off unless enabled in advanced settings
         expect(component.props.canCreateChannels).toBe(true); // By default, we allow creating channels
         expect(component.props.canJoinChannels).toBe(true); // By default, we allow joining channels
         expect(component.props.canInvitePeople).toBe(false);

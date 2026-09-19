@@ -81,6 +81,22 @@ export const observePushDisabledInServerAcknowledged = (serverDomainString: stri
     );
 };
 
+export const getPushProxyAlertsEnabled = async () => {
+    const records = await queryGlobalValue(GLOBAL_IDENTIFIERS.PUSH_PROXY_ALERTS)?.fetch();
+    return Boolean(records?.[0]?.value);
+};
+
+export const observePushProxyAlertsEnabled = () => {
+    const query = queryGlobalValue(GLOBAL_IDENTIFIERS.PUSH_PROXY_ALERTS);
+    if (!query) {
+        return of$(false);
+    }
+    return query.observe().pipe(
+        switchMap((result) => (result.length ? result[0].observe() : of$(false))),
+        switchMap((v) => of$(Boolean(v))),
+    );
+};
+
 export const getFirstLaunch = async () => {
     const records = await queryGlobalValue(GLOBAL_IDENTIFIERS.FIRST_LAUNCH)?.fetch();
     if (!records?.[0]?.value) {

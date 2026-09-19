@@ -1,0 +1,11 @@
+NSAppleMusicUsageDescription = "啟用媒體庫存取即表示您可以在 Mattermost 中為您的訊息夾帶媒體庫檔案。";
+NSBluetoothAlwaysUsageDescription = "啟用藍牙存取即表示我們可以在您的裝置及用戶端間同步內容。";
+NSBluetoothPeripheralUsageDescription = "啟用藍牙存取即表示我們可以在通話時連結音訊周邊設備，且可在您的裝置及用戶端間同步內容。";
+NSCameraUsageDescription = "允許存取相機可讓您拍攝照片或影片，並附加於訊息。";
+NSFaceIDUsageDescription = "允許存取 Face ID 即表示我們可以限制未經授權的使用者在您的裝置上存取 Mattermost。";
+NSLocationAlwaysUsageDescription = "啟用定位資訊存取即表示我們可以為您分享於 Mattermost 中的照片及影片，加上定位中繼資料。";
+NSLocationWhenInUseUsageDescription = "啟用定位資訊存取即表示我們可以為您分享於 Mattermost 中的照片及影片，加上定位中繼資料。";
+NSMicrophoneUsageDescription = "啟用存取您的裝置麥克風即表示您可以擷取音訊以用於通話，或用於分享至 Mattermost 的影片。";
+NSPhotoLibraryAddUsageDescription = "允許圖片庫寫入權限即表示您可以儲存從 Mattermost 下載的圖片及影片至裝置上。";
+NSPhotoLibraryUsageDescription = "允許圖片庫存取可讓您選擇圖片及影片，並附加於訊息。";
+NSSpeechRecognitionUsageDescription = "允許您的裝置傳送使用者資料給 Apple 即表示您可以傳送語音訊息給 Mattermost。";

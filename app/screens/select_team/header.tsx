@@ -10,7 +10,7 @@ import {logout} from '@actions/remote/session';
 import TouchableWithFeedback from '@components/touchable_with_feedback';
 import {useServerDisplayName, useServerUrl} from '@context/server';
 import {useTheme} from '@context/theme';
-import {alertServerLogout} from '@utils/server';
+import {alertServerLogout, canSwitchServers} from '@utils/server';
 import {changeOpacity, makeStyleSheetFromTheme} from '@utils/theme';
 import {typography} from '@utils/typography';
 
@@ -50,7 +50,7 @@ function Header() {
     const serverDisplayName = useServerDisplayName();
     const serverUrl = useServerUrl();
     const managedConfig = useManagedConfig<ManagedConfig>();
-    const canAddOtherServers = managedConfig?.allowOtherServers !== 'false';
+    const canAddOtherServers = canSwitchServers(managedConfig);
     const serverButtonRef = useRef<ServersRef>(null);
 
     const headerStyle = useMemo(() => ({...styles.header, marginLeft: canAddOtherServers ? MARGIN_WITH_SERVER_ICON : undefined}), [canAddOtherServers, styles]);
@@ -62,15 +62,9 @@ function Header() {
         serverButtonRef.current?.openServers();
     }, []);
 
-    let serverLabel = (
-        <Text
-            style={styles.displayNameText}
-            testID='select_team.server_display_name'
-            numberOfLines={1}
-        >
-            {serverDisplayName}
-        </Text>
-    );
+    // The server name is the bare URL in this build, so it is not shown. The label is only
+    // rendered when the user can reach the server switcher through it.
+    let serverLabel = <View style={styles.displayNameContainer}/>;
     if (canAddOtherServers) {
         serverLabel = (
             <TouchableWithFeedback
@@ -79,7 +73,13 @@ function Header() {
                 testID='select_team.server_display_name.touchable'
                 style={styles.displayNameContainer}
             >
-                {serverLabel}
+                <Text
+                    style={styles.displayNameText}
+                    testID='select_team.server_display_name'
+                    numberOfLines={1}
+                >
+                    {serverDisplayName}
+                </Text>
             </TouchableWithFeedback>
         );
     }

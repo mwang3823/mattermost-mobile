@@ -99,6 +99,7 @@ export const GLOBAL_IDENTIFIERS = {
     PUSH_DISABLED_ACK: 'pushDisabledAck',
     CACHE_MIGRATION: 'cacheMigration',
     PUSH_SIGNING_KEY: 'pushSigningKey',
+    PUSH_PROXY_ALERTS: 'pushProxyAlerts',
 };
 
 export enum OperationType {

@@ -27,6 +27,7 @@ import {NavigationStore, useCurrentScreen} from '@store/navigation_store';
 import {isMainActivity} from '@utils/helpers';
 import {tryRunAppReview} from '@utils/reviews';
 import {addSentryContext} from '@utils/sentry';
+import {canSwitchServers} from '@utils/server';
 
 import AdditionalTabletView from './additional_tablet_view';
 import CategoriesList from './categories_list';
@@ -83,7 +84,7 @@ const ChannelListScreen = (props: ChannelProps) => {
     const insets = useSafeAreaInsets();
     const serverUrl = useServerUrl();
     const params = route.params as {direction: string};
-    const canAddOtherServers = managedConfig?.allowOtherServers !== 'false';
+    const canAddOtherServers = canSwitchServers(managedConfig);
     const isTabScreen = currentScreen && HOME_TAB_SCREENS.has(currentScreen);
 
     const handleBackPress = useCallback(() => {

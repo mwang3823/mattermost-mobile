@@ -39,6 +39,7 @@ type Props = {
     displayName?: string;
     hasMoreThanOneTeam: boolean;
     iconPad?: boolean;
+    pushAlertEnabled: boolean;
     pushProxyStatus: string;
 }
 
@@ -46,10 +47,6 @@ const getStyles = makeStyleSheetFromTheme((theme: Theme) => ({
     headingStyles: {
         color: theme.sidebarText,
         ...typography('Heading', 700),
-    },
-    subHeadingStyles: {
-        color: changeOpacity(theme.sidebarText, 0.64),
-        ...typography('Heading', 50),
     },
     headerRow: {
         flexDirection: 'row',
@@ -82,7 +79,7 @@ const getStyles = makeStyleSheetFromTheme((theme: Theme) => ({
         fontSize: 18,
     },
     pushAlert: {
-        marginLeft: 5,
+        marginRight: 5,
     },
     subHeadingView: {
         flexDirection: 'row',
@@ -120,6 +117,7 @@ const ChannelListHeader = ({
     displayName,
     hasMoreThanOneTeam,
     iconPad,
+    pushAlertEnabled,
     pushProxyStatus,
 }: Props) => {
     const theme = useTheme();
@@ -233,15 +231,7 @@ const ChannelListHeader = ({
                         </Pressable>
                     </View>
                     <View style={styles.subHeadingView}>
-                        <Text
-                            numberOfLines={1}
-                            ellipsizeMode='tail'
-                            style={styles.subHeadingStyles}
-                            testID='channel_list_header.server_display_name'
-                        >
-                            {serverDisplayName}
-                        </Text>
-                        {pushProxyStatus !== PUSH_PROXY_STATUS_VERIFIED && (
+                        {pushAlertEnabled && pushProxyStatus !== PUSH_PROXY_STATUS_VERIFIED && (
                             <TouchableWithFeedback
                                 onPress={onPushAlertPress}
                                 testID='channel_list_header.push_alert'

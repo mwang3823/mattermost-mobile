@@ -1571,6 +1571,8 @@
   "settings.advanced.delete": "Delete",
   "settings.advanced.delete_data": "Delete local files",
   "settings.advanced.delete_message.confirmation": "\nThis will delete all files downloaded through the app for this server. Please confirm to proceed.\n",
+  "settings.advanced.push_alerts": "Notification error alerts",
+  "settings.advanced.push_alerts.description": "Show a warning when notifications cannot be received from a server.",
   "settings.display": "Display",
   "settings.notice_mobile_link": "mobile apps",
   "settings.notice_platform_link": "server",

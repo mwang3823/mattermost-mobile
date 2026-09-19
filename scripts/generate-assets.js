@@ -6,6 +6,25 @@
 const fs = require('fs');
 const fsPath = require('path');
 
+// Khoi "Build" trong config.json chi dung luc build (ten app, bundle id, keystore,
+// team id...). App khong doc no, va no khong nen di vao bundle, nen bi loai o day.
+function stripBuildConfig(fileName, contents) {
+    if (fileName !== 'config.json') {
+        return contents;
+    }
+    try {
+        const json = JSON.parse(contents);
+        if (json.Build === undefined) {
+            return contents;
+        }
+        delete json.Build;
+        return JSON.stringify(json);
+    } catch (e) {
+        console.error('Failed to strip the Build section from ' + fileName);
+        throw e;
+    }
+}
+
 // Takes the files in rootA/path, overwrites or merges them with the corresponding file in rootB/path, and places the
 // resulting file in dest/path. JSON files that exist in both places are shallowly (TODO maybe deeply) merged and all
 // other types of files are overwritten.
@@ -69,16 +88,16 @@ function leftMergeDirs(rootA, rootB, dest, path) {
                     const objB = JSON.parse(fileB);
 
                     console.log('Merging ' + filePathA + ' with ' + filePathB + ' into ' + outPath);
-                    out.write(JSON.stringify(Object.assign({}, objA, objB)));
+                    out.write(stripBuildConfig(file, JSON.stringify(Object.assign({}, objA, objB))));
                 } else {
                     // Copy fileB instead of fileA
                     console.log('Copying ' + filePathB + ' from override to ' + outPath);
-                    out.write(fileB);
+                    out.write(stripBuildConfig(file, fileB.toString()));
                 }
             } else {
                 // Copy fileA to the destination
                 console.log('Copying ' + filePathA + ' from base to ' + outPath);
-                out.write(fileA);
+                out.write(file === 'config.json' ? stripBuildConfig(file, fileA.toString()) : fileA);
             }
         }
     }

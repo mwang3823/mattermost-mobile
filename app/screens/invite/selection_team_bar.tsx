@@ -15,7 +15,6 @@ import Share, {type ShareOptions} from 'react-native-share';
 import CompassIcon from '@components/compass_icon';
 import FormattedText from '@components/formatted_text';
 import TeamIcon from '@components/team_sidebar/team_list/team_item/team_icon';
-import {useServerDisplayName} from '@context/server';
 import {useTheme} from '@context/theme';
 import {usePreventDoubleTap} from '@hooks/utils';
 import {makeStyleSheetFromTheme, changeOpacity} from '@utils/theme';
@@ -43,11 +42,6 @@ const getStyleSheet = makeStyleSheetFromTheme((theme: Theme) => {
             color: theme.centerChannelColor,
             marginLeft: 12,
             ...typography('Body', 200, 'SemiBold'),
-        },
-        serverText: {
-            color: changeOpacity(theme.centerChannelColor, 0.72),
-            marginLeft: 12,
-            ...typography('Body', 75, 'Regular'),
         },
         shareLink: {
             display: 'flex',
@@ -95,7 +89,6 @@ export default function SelectionTeamBar({
     const {formatMessage} = useIntl();
     const theme = useTheme();
     const styles = getStyleSheet(theme);
-    const serverDisplayName = useServerDisplayName();
 
     const handleOnLayoutContainer = useCallback((e: LayoutChangeEvent) => {
         onLayoutContainer(e);
@@ -177,13 +170,6 @@ export default function SelectionTeamBar({
                     testID='invite.team_display_name'
                 >
                     {teamDisplayName}
-                </Text>
-                <Text
-                    style={styles.serverText}
-                    numberOfLines={1}
-                    testID='invite.server_display_name'
-                >
-                    {serverDisplayName}
                 </Text>
             </View>
             <TouchableOpacity

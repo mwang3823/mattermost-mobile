@@ -10,6 +10,7 @@ import {setServerCredentials} from '@init/credentials';
 import NetworkPerformanceManager from '@managers/network_performance_manager';
 import PerformanceMetricsManager from '@managers/performance_metrics_manager';
 import {NetworkRequestMetrics} from '@managers/performance_metrics_manager/constant';
+import {traceApiError, traceApiPayload, traceApiRequest, traceApiResponse} from '@utils/dev_trace';
 import {isErrorWithStatusCode} from '@utils/errors';
 import {getFormattedFileSize} from '@utils/file';
 import {logDebug, logInfo} from '@utils/log';
@@ -385,14 +386,19 @@ export default class ClientTracking {
         }
 
         const performanceRequestId = NetworkPerformanceManager.startRequestTracking(this.apiClient.baseUrl, url);
+        const traceStartedAt = traceApiRequest(method, url);
+
+        const requestOptions = this.buildRequestOptions(options);
 
         let response: ClientResponse;
         try {
-            response = await request!(url, this.buildRequestOptions(options));
+            response = await request!(url, requestOptions);
         } catch (error) {
             NetworkPerformanceManager.cancelRequestTracking(this.apiClient.baseUrl, performanceRequestId);
             const response_error = error as ClientError;
             const status_code = isErrorWithStatusCode(error) ? error.status_code : undefined;
+            traceApiError(method, url, traceStartedAt, status_code);
+            traceApiPayload({requestHeaders: requestOptions.headers, requestBody: options.body});
             throw new ClientError(this.apiClient.baseUrl, {
                 message: 'Received invalid response from the server.',
                 intl: defineMessage({
@@ -410,6 +416,8 @@ export default class ClientTracking {
             }
         }
         const headers: ClientHeaders = response.headers || {};
+        traceApiResponse(method, url, response.code, traceStartedAt, response.metrics?.size, groupLabel);
+        traceApiPayload({requestHeaders: requestOptions.headers, requestBody: options.body, responseHeaders: headers, responseBody: response.data});
         if (groupLabel && CollectNetworkMetrics) {
             this.trackRequest(groupLabel, url, response.metrics);
         }

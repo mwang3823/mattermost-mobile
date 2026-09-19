@@ -7,6 +7,7 @@ import {distinctUntilChanged, switchMap} from 'rxjs/operators';
 
 import {Permissions} from '@constants';
 import {withServerUrl} from '@context/server';
+import {observePushProxyAlertsEnabled} from '@queries/app/global';
 import {observePermissionForTeam} from '@queries/servers/role';
 import {observeConfigBooleanValue, observePushVerificationStatus} from '@queries/servers/system';
 import {observeCurrentTeam, queryMyTeams} from '@queries/servers/team';
@@ -83,6 +84,7 @@ const enhanced = withObservables([], ({database, serverUrl}: EnhanceProps) => {
             switchMap((v) => of$(v > 1)),
             distinctUntilChanged(),
         ),
+        pushAlertEnabled: observePushProxyAlertsEnabled(),
         pushProxyStatus: observePushVerificationStatus(database),
     };
 });

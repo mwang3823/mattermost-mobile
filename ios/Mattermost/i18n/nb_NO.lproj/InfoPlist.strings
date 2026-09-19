@@ -1,0 +1,11 @@
+NSAppleMusicUsageDescription = "Å aktivere tilgang til mediebiblioteket ditt betyr at du kan legge ved filer fra mediebiblioteket til meldingene dine i Mattermost.";
+NSBluetoothAlwaysUsageDescription = "Å aktivere tilgang til Bluetooth betyr at vi kan synkronisere innhold på tvers av enhetene og klientene dine.";
+NSBluetoothPeripheralUsageDescription = "Aktivering av tilgang til Bluetooth betyr at vi kan koble til eksterntlydutstyr for samtaler, og synkronisere innhold på tvers av dine klienter og enheter.";
+NSCameraUsageDescription = "Ved å gi tilgang til kameraet ditt kan du ta bilder eller videoer og legge dem ved meldinger.";
+NSFaceIDUsageDescription = "Aktivering av tilgang til Face ID betyr at vi kan begrense uautoriserte brukere fra å få tilgang til Mattermost på enheten din.";
+NSLocationAlwaysUsageDescription = "Å aktivere tilgang til posisjonsdataene dine betyr at vi kan legge til posisjonsmetadata til bilder og videoer du deler i Mattermost.";
+NSLocationWhenInUseUsageDescription = "Å aktivere tilgang til posisjonsdataene dine betyr at vi kan legge til posisjonsmetadata til bilder og videoer du deler i Mattermost.";
+NSMicrophoneUsageDescription = "Hvis du aktiverer tilgang til enhetens mikrofoner, kan du ta opp lyd for samtaler eller videoer som du kan dele i Mattermost.";
+NSPhotoLibraryAddUsageDescription = "Hvis du aktiverer skrivetilgang til bildebiblioteket ditt, kan du lagre nedlastede bilder og videoer fra Mattermost på enheten din.";
+NSPhotoLibraryUsageDescription = "Ved å gi tilgang til bildebiblioteket ditt kan du velge bilder eller videoer og legge dem ved meldinger.";
+NSSpeechRecognitionUsageDescription = "Hvis du aktiverer enheten din til å sende brukerdata til Apple, betyr det at du kan sende talemeldinger til Mattermost.";

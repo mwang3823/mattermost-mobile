@@ -1,0 +1,11 @@
+NSAppleMusicUsageDescription = "メディアライブラリへのアクセスを許可すると、Mattermost のメッセージにメディアライブラリのファイルを添付できるようになります。";
+NSBluetoothAlwaysUsageDescription = "Bluetoothへのアクセスを許可すると、あなたのデバイスとクライアントの間でコンテンツを同期できるようになります。";
+NSBluetoothPeripheralUsageDescription = "Bluetoothへのアクセスを許可すると、オーディオ周辺機器と接続して通話したり、デバイスとクライアントとの間でコンテンツを同期できるようになります。";
+NSCameraUsageDescription = "カメラへのアクセスを許可すると、写真や動画を撮影してメッセージに添付できるようになります。";
+NSFaceIDUsageDescription = "Face IDへのアクセスを許可すると、権限のないユーザーがあなたのデバイスのMattermost にアクセスできなくなります。";
+NSLocationAlwaysUsageDescription = "位置情報へのアクセスを許可すると、あなたがMattermost で共有する写真や動画に位置情報のメタデータが追加されます。";
+NSLocationWhenInUseUsageDescription = "位置情報へのアクセスを許可すると、あなたがMattermost で共有する写真や動画に位置情報のメタデータが追加されます。";
+NSMicrophoneUsageDescription = "デバイスのマイクへのアクセスを許可すると、Mattermostで通話する際や、共有するためのビデオを撮影する際に音声をキャプチャできるようになります。";
+NSPhotoLibraryAddUsageDescription = "フォトライブラリへの書き込みアクセスを許可すると、Mattermostからダウンロードした写真やビデオをデバイスに保存できるようになります。";
+NSPhotoLibraryUsageDescription = "フォトライブラリへのアクセスを許可すると、写真や動作を選択してメッセージに添付できるようになります。";
+NSSpeechRecognitionUsageDescription = "デバイスからAppleへのユーザーデータの送信を許可すると、Mattermost にボイスメッセージを送信できるようになります。";

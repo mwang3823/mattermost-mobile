@@ -16,6 +16,7 @@ jest.mock('@screens/navigation', () => ({
 
 function getBaseProps(overrides: Partial<ComponentProps<typeof Header>> = {}): ComponentProps<typeof Header> {
     return {
+        pushAlertEnabled: true,
         pushProxyStatus: PUSH_PROXY_STATUS_VERIFIED,
         canCreateChannels: true,
         canJoinChannels: true,
@@ -47,6 +48,14 @@ describe('components/channel_list/header', () => {
         );
 
         expect(wrapper.getByTestId('channel_list_header.push_alert')).toBeTruthy();
+    });
+
+    it('Push notifications disabled hides the alert icon when the setting is off', () => {
+        const wrapper = renderWithIntl(
+            <Header {...getBaseProps({pushAlertEnabled: false, pushProxyStatus: PUSH_PROXY_RESPONSE_NOT_AVAILABLE})}/>,
+        );
+
+        expect(wrapper.queryByTestId('channel_list_header.push_alert')).toBeNull();
     });
 
     describe('team menu affordance', () => {

@@ -88,6 +88,9 @@ tags
 **/fastlane/test_output
 **/fastlane/.env
 
+# env Fastlane sinh tu assets/base/config.json (scripts/build_config.js)
+fastlane/.env.generated.*
+
 # Sentry
 android/sentry.properties
 ios/sentry.properties
@@ -144,3 +147,4 @@ detox/maestro/.maestro-test-env*.sh
 detox/maestro/.maestro-test-env*.bak
 
 .e2e-debug/
+__pycache__/

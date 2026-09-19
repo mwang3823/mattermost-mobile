@@ -5,6 +5,7 @@ import {act, fireEvent, screen, waitFor} from '@testing-library/react-native';
 import React from 'react';
 import {Alert} from 'react-native';
 
+import {storePushProxyAlertsEnabled} from '@actions/app/global';
 import {Screens} from '@constants';
 import {navigateToSettingsScreen} from '@screens/navigation';
 import {renderWithIntlAndTheme} from '@test/intl-test-helper';
@@ -36,6 +37,7 @@ describe('AdvancedSettings', () => {
         componentId: 'SettingsAdvanced' as const,
         isDevMode: false,
         lowConnectivityMonitorEnabled: false,
+        pushAlertEnabled: false,
     };
 
     const mockFiles: FileInfo[] = [
@@ -219,6 +221,28 @@ describe('AdvancedSettings', () => {
             fireEvent.press(deleteOption);
 
             expect(Alert.alert).toHaveBeenCalled();
+        });
+    });
+
+    describe('notification error alerts', () => {
+        it('should store the new value when the toggle is pressed', async () => {
+            renderWithIntlAndTheme(<AdvancedSettings {...defaultProps}/>);
+
+            const toggle = await screen.findByTestId('advanced_settings.push_alerts.option.toggled.false.button');
+            fireEvent(toggle, 'valueChange', true);
+
+            expect(storePushProxyAlertsEnabled).toHaveBeenCalledWith(true);
+        });
+
+        it('should reflect the enabled value', async () => {
+            renderWithIntlAndTheme(
+                <AdvancedSettings
+                    {...defaultProps}
+                    pushAlertEnabled={true}
+                />,
+            );
+
+            expect(await screen.findByTestId('advanced_settings.push_alerts.option.toggled.true.button')).toBeTruthy();
         });
     });
 

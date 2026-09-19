@@ -5,6 +5,7 @@ import React, {useCallback, useState} from 'react';
 import {useIntl} from 'react-intl';
 import {Alert, Pressable, type PressableStateCallbackType} from 'react-native';
 
+import {storePushProxyAlertsEnabled} from '@actions/app/global';
 import SettingContainer from '@components/settings/container';
 import SettingOption from '@components/settings/option';
 import SettingSeparator from '@components/settings/separator';
@@ -22,9 +23,11 @@ const EMPTY_FILES: FileInfo[] = [];
 
 type AdvancedSettingsProps = {
     isDevMode: boolean;
+    pushAlertEnabled: boolean;
 };
 const AdvancedSettings = ({
     isDevMode,
+    pushAlertEnabled,
 }: AdvancedSettingsProps) => {
     const intl = useIntl();
     const serverUrl = useServerUrl();
@@ -67,6 +70,10 @@ const AdvancedSettings = ({
         }
     }, [files.length, getAllCachedFiles, intl, serverUrl]));
 
+    const onTogglePushAlert = useCallback((value: string | boolean) => {
+        storePushProxyAlertsEnabled(Boolean(value));
+    }, []);
+
     const onPressComponentLibrary = useCallback(() => {
         navigateToSettingsScreen(Screens.COMPONENT_LIBRARY);
     }, []);
@@ -99,6 +106,19 @@ const AdvancedSettings = ({
                 />
                 <SettingSeparator/>
             </Pressable>
+            <SettingOption
+                action={onTogglePushAlert}
+                description={intl.formatMessage({
+                    id: 'settings.advanced.push_alerts.description',
+                    defaultMessage: 'Show a warning when notifications cannot be received from a server.',
+                })}
+                descriptionNumberOfLines={2}
+                label={intl.formatMessage({id: 'settings.advanced.push_alerts', defaultMessage: 'Notification error alerts'})}
+                selected={pushAlertEnabled}
+                testID='advanced_settings.push_alerts.option'
+                type='toggle'
+            />
+            <SettingSeparator/>
             {isDevMode && (
                 <Pressable
                     onPress={onPressComponentLibrary}

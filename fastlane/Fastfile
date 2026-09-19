@@ -448,6 +448,7 @@ platform :ios do
       more_xc_args: "-sdk iphoneos CODE_SIGNING_ALLOWED=NO",
       rel_build_dir: "Release-iphoneos",
       output_file: "Mattermost-unsigned.ipa",
+      as_ipa: true,
     )
   end
 
@@ -791,7 +792,7 @@ platform :ios do
     )
   end
 
-  def build_ios_unsigned_or_simulator(more_xc_args:, rel_build_dir:, output_file:, ci_optimized: false)
+  def build_ios_unsigned_or_simulator(more_xc_args:, rel_build_dir:, output_file:, ci_optimized: false, as_ipa: false)
     root_dir = Dir[File.expand_path('..')].first
     ios_build_dir = "#{root_dir}/ios/Build/Products"
 
@@ -809,7 +810,13 @@ platform :ios do
 
     ci_flags = ci_optimized ? " COMPILER_INDEX_STORE_ENABLE=NO DEBUG_INFORMATION_FORMAT=dwarf" : ""
     sh "cd #{root_dir}/ios && xcodebuild -workspace Mattermost.xcworkspace -scheme Mattermost -configuration Release -parallelizeTargets CODE_SIGN_IDENTITY='' CODE_SIGNING_REQUIRED=NO SYMROOT='#{ios_build_dir}' #{more_xc_args}#{ci_flags}"
-    sh "cd #{ios_build_dir}/#{rel_build_dir} && zip -r #{output_file} Mattermost.app"
+    if as_ipa
+      # An .ipa must wrap the .app in a Payload/ directory, otherwise the file
+      # cannot be re-signed or installed by the usual tooling.
+      sh "cd #{ios_build_dir}/#{rel_build_dir} && rm -rf Payload && mkdir Payload && ditto Mattermost.app Payload/Mattermost.app && zip -qry #{output_file} Payload && rm -rf Payload"
+    else
+      sh "cd #{ios_build_dir}/#{rel_build_dir} && zip -r #{output_file} Mattermost.app"
+    end
     sh "mv #{ios_build_dir}/#{rel_build_dir}/#{output_file} #{root_dir}"
   end
 
@@ -871,29 +878,38 @@ platform :android do
     )
 
     package_id = ENV['MAIN_APP_IDENTIFIER'] || 'com.mattermost.rnbeta'
+
+    # applicationId (id tren store) va package Java (namespace, thu muc source)
+    # khong bat buoc giong nhau. Fork nao doi applicationId nhung giu nguyen
+    # package Java thi dat ANDROID_JAVA_PACKAGE de khong phai di chuyen source.
+    java_package = ENV['ANDROID_JAVA_PACKAGE'].to_s.empty? ? package_id : ENV['ANDROID_JAVA_PACKAGE']
+
     android_change_package_identifier(newIdentifier: package_id, manifest: './android/app/src/main/AndroidManifest.xml')
     android_update_application_id(app_folder_name: 'android/app', application_id: package_id)
-    android_update_namespace(app_folder_name: 'android/app', namespace: package_id)
+    android_update_namespace(app_folder_name: 'android/app', namespace: java_package)
 
-    app_scheme = ENV['APP_SCHEME'] || 'mattermost'
-    find_replace_string(
-      path_to_file: "./android/app/src/main/AndroidManifest.xml",
-      old_string: 'scheme="mattermost"',
-      new_string: "scheme=\'#{app_scheme}\'"
-    )
-
-    
-    app_auth_scheme = get_auth_scheme
-
-    find_replace_string(
+    # scripts/build_config.js co the da dat cac scheme trong AndroidManifest theo
+    # config.json; luc do dat SKIP_MANIFEST_SCHEME_REWRITE=true de khong ghi de.
+    unless ENV['SKIP_MANIFEST_SCHEME_REWRITE'] == 'true'
+      app_scheme = ENV['APP_SCHEME'] || 'mattermost'
+      find_replace_string(
         path_to_file: "./android/app/src/main/AndroidManifest.xml",
-        old_string: 'scheme="mmauthbeta"',
-        new_string: "scheme=\"#{app_auth_scheme}\"",
-    )
+        old_string: 'scheme="mattermost"',
+        new_string: "scheme=\'#{app_scheme}\'"
+      )
+
+      app_auth_scheme = get_auth_scheme
+
+      find_replace_string(
+          path_to_file: "./android/app/src/main/AndroidManifest.xml",
+          old_string: 'scheme="mmauthbeta"',
+          new_string: "scheme=\"#{app_auth_scheme}\"",
+      )
+    end
 
     helpers_dir = './android/app/src/main/java/com/mattermost/helpers/'
     beta_dir = './android/app/src/main/java/com/mattermost/rnbeta/'
-    release_dir = "./android/app/src/main/java/#{package_id.gsub '.', '/'}/"
+    release_dir = "./android/app/src/main/java/#{java_package.gsub '.', '/'}/"
     if release_dir != beta_dir
       unless Dir.exist?(".#{release_dir}")
         FileUtils.mkdir_p ".#{release_dir}"
@@ -905,7 +921,7 @@ platform :android do
         find_replace_string(
             path_to_file: item[1..-1],
             old_string: 'package com.mattermost.rnbeta;',
-            new_string: "package #{package_id};"
+            new_string: "package #{java_package};"
         )
       end
 
@@ -913,7 +929,7 @@ platform :android do
         find_replace_string(
             path_to_file: item[1..-1],
             old_string: 'package com.mattermost.rnbeta',
-            new_string: "package #{package_id}"
+            new_string: "package #{java_package}"
         )
       end
 
@@ -921,7 +937,7 @@ platform :android do
         find_replace_string(
             path_to_file: item[1..-1],
             old_string: 'import com.mattermost.rnbeta.MainApplication;',
-            new_string: "import #{package_id}.MainApplication;"
+            new_string: "import #{java_package}.MainApplication;"
         )
       end
 
@@ -929,7 +945,7 @@ platform :android do
         find_replace_string(
             path_to_file: item[1..-1],
             old_string: 'import com.mattermost.rnbeta.*;',
-            new_string: "import #{package_id}.*;"
+            new_string: "import #{java_package}.*;"
         )
       end
 
@@ -937,7 +953,7 @@ platform :android do
         find_replace_string(
             path_to_file: item[1..-1],
             old_string: 'import com.mattermost.rnbeta.*',
-            new_string: "import #{package_id}.*"
+            new_string: "import #{java_package}.*"
         )
       end
     end

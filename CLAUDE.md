@@ -1,8 +1,12 @@
 # CLAUDE.md
 
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
 ## Project Overview
 
-React Native 0.83.9 with **New Architecture enabled** (RCT_NEW_ARCH_ENABLED=1).
+Mattermost Mobile v2 — React Native 0.83.9 with **New Architecture enabled** (RCT_NEW_ARCH_ENABLED=1), Expo 55 + expo-router.
+
+**Toolchain**: Node 24.15.0 (`.nvmrc`), npm ^10 || ^11, Ruby 3.2.11 (`.ruby-version`). Minimum server version: 11.7.0+.
 
 ## Important Development Notes
 - Always run the checks before committing code
@@ -39,15 +43,26 @@ npm start                     # Start Metro bundler
 npm run ios                   # Run iOS in simulator
 npm run android               # Run Android in emulator
 
-# TypeScript type checking
-npm run tsc
+# Checks (run before committing)
+npm run check                 # lint + tsc
+npm run check-test            # lint + tsc + jest
+npm run lint                  # eslint (whole repo)
+npm run fix                   # eslint --fix
+npm run tsc                   # tsc --noEmit
 
-# Fix linting issues
-npm run fix
+# Unit tests (jest, preset jest-expo, TZ forced to UTC)
+npm test                                        # full suite (maxWorkers=4)
+npm test -- app/queries/servers/channel.test.ts # single file
+npm test -- -t 'should return the channel'      # single test by name
+npm run test:watch
+npm run test:coverage
+npm run updatesnapshot
 
-# E2E tests are in separate detox/ package
+# E2E tests live in the separate detox/ package (own package.json + node_modules)
 npm run e2e:ios               # cd detox && npm run e2e:ios-test
 npm run e2e:android           # cd detox && npm run e2e:android-build && npm run e2e:android-test
+# From detox/: e2e:ios-build, e2e:ios-ipad-test, e2e:android-create-emulator,
+# *-release variants, `npm run provision` (server fixtures), `npm run start:webhook`
 
 # Builds delegate to Fastlane via shell scripts
 npm run build:ios             # ./scripts/build.sh ipa
@@ -55,7 +70,11 @@ npm run build:android         # ./scripts/build.sh apk
 
 # Utilities
 npm run clean                 # Clean build artifacts
+npm run i18n-extract          # Regenerate en.json from defineMessages() in code
+npm run intune:enable         # Link + pod-install the Intune library (intune:disable/status to revert)
 ```
+
+`postinstall` runs `patch-package` + `scripts/postinstall.sh`; the husky pre-commit hook runs `scripts/pre-commit.sh` (ESLint + incremental tsc).
 
 ## Architecture
 
@@ -106,13 +125,17 @@ npm run clean                 # Clean build artifacts
   - `(modals)/`: Modal presentations
   - `(bottom_sheet)/`: Bottom sheet presentations
 - Navigation uses `router.push()`, `router.replace()`, `router.back()` from `expo-router`
-- Deep linking handled through expo-router's built-in URL routing
+- Deep linking handled through expo-router's built-in URL routing, plus `app/routes/+native-intent.ts`
+- **Route files are thin re-export wrappers**, not implementations: e.g. `app/routes/(authenticated)/channel.tsx` is just `export {default} from '@screens/channel';`. Screen logic lives in `app/screens/` (or `app/products/<product>/screens/`) — edit there, and add a route file only to expose a new URL.
 
 ### Products Architecture
 Modular features in `app/products/` with their own database models:
 - `agents/`: AI agents
+- `boards/`: Boards (database models/schema only so far)
 - `calls/`: Voice/video calling
 - `playbooks/`: Playbooks with dedicated DB models
+
+Each product mirrors the app layout inside its own folder (`actions/`, `client/rest.ts`, `components/`, `database/`, `queries/`, `screens/`, `store/`). `app/products/playbooks` is the canonical reference for structure and test layout.
 
 #### Agents Streaming Architecture
 **WebSocket Events:**
@@ -159,7 +182,9 @@ Located at `libraries/@mattermost/`:
 **Testing guide:** See [docs/testing_guide.md](docs/testing_guide.md) for how to add and structure unit tests.
 
 ### Test Organization
-- **Jest coverage excludes** `/components/` and `/screens/` directories
+- Tests are **co-located** with the file under test (`foo.test.ts` next to `foo.ts`); `detox/` is excluded via `testPathIgnorePatterns`
+- **Jest coverage excludes** `/components/`, `/screens/` and `/routes/` directories
+- When a component is split into `index.tsx` (the `withDatabase`/`withObservables` wiring) and `{name}.tsx`, test the bare component and pass enhancer-injected props directly — don't render-test the wiring
 - Mock database manager at `app/database/manager/__mocks__/index.ts`
 - **E2E tests** in separate `detox/` package (not in main package.json)
 - Add mocks to central `setup.ts` file, not individual test files
@@ -335,8 +360,10 @@ E2E results are uploaded to Test System IO (TSIO) and surfaced as GitHub commit 
 - Don't set style properties to their default values (e.g., `marginBottom: 0`) — it's dead code
 
 ### Localization (i18n)
-- **CRITICAL**: Only update `en.json` - never modify other language files or Weblate gets corrupted
-- **Adding new strings**: Define the message ID and defaultMessage in code using `defineMessages()`, then run `npm run i18n-extract` to automatically add them to `en.json`
+- **`en.json` is the source of truth**: never hand-edit it — define the message ID and defaultMessage in code with `defineMessages()`, then run `npm run i18n-extract` to regenerate it
+- **`vi.json` is maintained in this fork** and may be edited directly. This fork is not synced to Weblate, so the upstream rule ("only ever touch `en.json`") does not apply to `vi.json`. Keep its keys sorted and its ICU placeholders identical to `en.json`.
+- **All other language files are still off-limits** — leave them to upstream/Weblate
+- Validate after editing `vi.json`: every key must exist in `en.json`, and every `{placeholder}` / `plural` branch must match the English string
 - Default messages in code must match JSON translations exactly, including newlines
 - Translation IDs should be descriptive enough for translators to understand context
 - Don't reuse translation IDs

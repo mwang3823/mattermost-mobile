@@ -5,8 +5,9 @@ import {Alert} from 'react-native';
 
 import {storePushDisabledInServerAcknowledged} from '@actions/app/global';
 import {PUSH_PROXY_RESPONSE_NOT_AVAILABLE, PUSH_PROXY_RESPONSE_UNKNOWN, PUSH_PROXY_STATUS_NOT_AVAILABLE, PUSH_PROXY_STATUS_UNKNOWN, PUSH_PROXY_STATUS_VERIFIED} from '@constants/push_proxy';
-import {getPushDisabledInServerAcknowledged} from '@queries/app/global';
+import {getPushDisabledInServerAcknowledged, getPushProxyAlertsEnabled} from '@queries/app/global';
 import EphemeralStore from '@store/ephemeral_store';
+import {logDebug} from '@utils/log';
 
 import {urlSafeBase64Encode} from './security';
 
@@ -18,18 +19,21 @@ export function pushDisabledInServerAck(serverUrl: string) {
 }
 
 export async function canReceiveNotifications(serverUrl: string, verification: string, intl: IntlShape) {
-    const hasAckNotification = await pushDisabledInServerAck(serverUrl);
+    const alertsEnabled = await getPushProxyAlertsEnabled();
+    logDebug('canReceiveNotifications', serverUrl, 'verification=', verification, 'alertsEnabled=', alertsEnabled);
 
     switch (verification) {
         case PUSH_PROXY_RESPONSE_NOT_AVAILABLE:
             EphemeralStore.setPushProxyVerificationState(serverUrl, PUSH_PROXY_STATUS_NOT_AVAILABLE);
-            if (!hasAckNotification) {
+            if (alertsEnabled && !(await pushDisabledInServerAck(serverUrl))) {
                 alertPushProxyError(intl, serverUrl);
             }
             break;
         case PUSH_PROXY_RESPONSE_UNKNOWN:
             EphemeralStore.setPushProxyVerificationState(serverUrl, PUSH_PROXY_STATUS_UNKNOWN);
-            alertPushProxyUnknown(intl);
+            if (alertsEnabled) {
+                alertPushProxyUnknown(intl);
+            }
             break;
         default:
             EphemeralStore.setPushProxyVerificationState(serverUrl, PUSH_PROXY_STATUS_VERIFIED);

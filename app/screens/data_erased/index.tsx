@@ -1,6 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
+import {useManagedConfig} from '@mattermost/react-native-emm';
 import React, {useCallback, useMemo, useState} from 'react';
 import {useIntl} from 'react-intl';
 import {AppState, Text, View} from 'react-native';
@@ -14,6 +15,7 @@ import {useTheme} from '@context/theme';
 import useDidMount from '@hooks/did_mount';
 import {usePreventDoubleTap} from '@hooks/utils';
 import Servers from '@screens/home/channel_list/servers';
+import {canSwitchServers} from '@utils/server';
 import {changeOpacity, makeStyleSheetFromTheme} from '@utils/theme';
 import {typography} from '@utils/typography';
 
@@ -111,6 +113,7 @@ const DataErased = ({serverUrl, displayName}: DataErasedProps) => {
         }
     }, [serverUrl]));
 
+    const managedConfig = useManagedConfig<ManagedConfig>();
     const iconStyle = useMemo(() => [styles.icon, {top: insets.top + 10}], [insets.top, styles.icon]);
     const iconColor = useMemo(() => changeOpacity(theme.centerChannelColor, 0.56), [theme.centerChannelColor]);
 
@@ -155,12 +158,14 @@ const DataErased = ({serverUrl, displayName}: DataErasedProps) => {
                     />
                 )}
             </View>
-            <Servers
-                iconStyle={iconStyle}
-                iconColor={iconColor}
-                badgeBorderColor={theme.centerChannelBg}
-                testID='data_erased.servers.server_icon'
-            />
+            {canSwitchServers(managedConfig) && (
+                <Servers
+                    iconStyle={iconStyle}
+                    iconColor={iconColor}
+                    badgeBorderColor={theme.centerChannelBg}
+                    testID='data_erased.servers.server_icon'
+                />
+            )}
         </View>
     );
 };

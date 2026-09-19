@@ -3,6 +3,7 @@
 
 import {Alert, type AlertButton} from 'react-native';
 
+import LocalConfig from '@assets/config.json';
 import {Screens, Sso, SupportedServer, Launch} from '@constants';
 import {navigateToScreen} from '@screens/navigation';
 import {getErrorMessage} from '@utils/errors';
@@ -12,6 +13,21 @@ import {tryOpenURL} from '@utils/url';
 import type ServersModel from '@typings/database/models/app/servers';
 import type {DeepLinkWithData} from '@typings/launch';
 import type {IntlShape} from 'react-intl';
+
+/**
+ * Whether the user is allowed to connect to, switch between or remove servers.
+ *
+ * It is false when an EMM policy forbids it, and also when the build is pinned to a single
+ * server through the local config (AutoSelectServerUrl + DefaultServerUrl) — in that case the
+ * server switcher and its bottom sheet are meaningless, so the UI hides them entirely.
+ */
+export function canSwitchServers(managedConfig?: Partial<ManagedConfig>) {
+    if (managedConfig?.allowOtherServers === 'false') {
+        return false;
+    }
+
+    return !(LocalConfig.AutoSelectServerUrl && LocalConfig.DefaultServerUrl);
+}
 
 export function isSupportedServer(currentVersion: string) {
     return isMinimumServerVersion(currentVersion, SupportedServer.MAJOR_VERSION, SupportedServer.MIN_VERSION, SupportedServer.PATCH_VERSION);

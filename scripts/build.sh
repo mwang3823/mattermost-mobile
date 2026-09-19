@@ -1,39 +1,67 @@
 #!/usr/bin/env bash
 
+# Toan bo cau hinh build nam trong assets/base/config.json (khoi "Build").
+# Doc + ap dung xuong project TRUOC khi build, roi sinh env cho Fastlane.
+function readBuildConfig() {
+    echo "Reading build configuration from assets/base/config.json"
+    node scripts/build_config.js --apply || exit 1
+
+    # Keystore/signing info is exported as ORG_GRADLE_PROJECT_* so Gradle picks it
+    # up from the environment (no passwords on the command line).
+    eval "$(node scripts/build_config.js --shell)" || exit 1
+}
+
 function execute() {
-    cd fastlane && NODE_ENV=production bundle exec fastlane $1 $2
+    local platform=$1
+    local lane=$2
+    local default_env=$3
+    local fastlane_env="${FASTLANE_ENV:-$default_env}"
+    local env_args=()
+
+    if [[ -n "$fastlane_env" ]]; then
+        if [[ -f "fastlane/.env.${fastlane_env}" ]]; then
+            env_args=(--env "$fastlane_env")
+            echo "Using fastlane env: ${fastlane_env}"
+        else
+            echo "fastlane/.env.${fastlane_env} not found, building with default values"
+        fi
+    fi
+
+    cd fastlane && NODE_ENV=production bundle exec fastlane "$platform" "$lane" "${env_args[@]}"
 }
 
 function apk() {
+  readBuildConfig
   case $1 in
     unsigned)
       echo "Building Android unsigned app"
       setup android
-      execute android unsigned
+      execute android unsigned generated.android
     ;;
     *)
       echo "Building Android app"
       setup android
-      execute android build
+      execute android build generated.android
   esac
 }
 
 function ipa() {
+  readBuildConfig
   case $1 in
     unsigned)
       echo "Building iOS unsigned app"
       setup ios
-      execute ios unsigned
+      execute ios unsigned generated.ios
     ;;
     simulator)
-      echo "Building unsigned x86_64 iOS app for iPhone simulator"
+      echo "Building unsigned iOS app for iPhone simulator"
       setup ios
-      execute ios simulator
+      execute ios simulator generated.ios
     ;;
     *)
       echo "Building iOS app"
       setup ios
-      execute ios build
+      execute ios build generated.ios
   esac
 }
 

@@ -79,8 +79,10 @@ class PushNotificationsSingleton {
 
     async registerIfNeeded() {
         const isRegistered = await Notifications.isRegisteredForRemoteNotifications();
+        logDebug('PushNotifications.registerIfNeeded: isRegistered', isRegistered);
         if (!isRegistered) {
-            await requestNotifications(['alert', 'sound', 'badge']);
+            const {status} = await requestNotifications(['alert', 'sound', 'badge']);
+            logDebug('PushNotifications.registerIfNeeded: permission status', status);
         }
         Notifications.registerRemoteNotifications();
 
@@ -105,12 +107,17 @@ class PushNotificationsSingleton {
             serverUrl = await DatabaseManager.getServerUrlFromIdentifier(payload.server_id);
         }
 
+        if (!serverUrl) {
+            logDebug('PushNotifications.getServerUrlFromNotification: no server matched', 'serverId=', payload?.server_id);
+        }
+
         return serverUrl;
     };
 
     handleClearNotification = async (notification: NotificationWithData) => {
         const {payload} = notification;
         const serverUrl = await this.getServerUrlFromNotification(notification);
+        logDebug('PushNotifications.handleClearNotification', serverUrl, 'channelId=', payload?.channel_id, 'rootId=', payload?.root_id);
 
         if (serverUrl && payload?.channel_id) {
             const database = DatabaseManager.serverDatabases[serverUrl]?.database;
@@ -177,15 +184,28 @@ class PushNotificationsSingleton {
             //      - Show the notification if it doesn't belong to the thread
             const condition3 = isInThreadScreen && !isSameThreadNotification;
 
-            if (condition1 || condition2 || condition3) {
+            const willShow = condition1 || condition2 || condition3;
+            logDebug('PushNotifications.handleInAppNotification', serverUrl,
+                'visibleScreen=', NavigationStore.getVisibleScreen(),
+                'isThread=', isThreadNotification, 'sameChannel=', isSameChannelNotification,
+                'crt=', isCRTEnabled, 'willShow=', willShow);
+
+            if (willShow) {
                 InAppNotificationStore.show(notification, serverUrl, serverName);
             }
+        } else {
+            logDebug('PushNotifications.handleInAppNotification: no database for server', serverUrl);
         }
     };
 
     handleMessageNotification = async (notification: NotificationWithData) => {
         const {payload, foreground, userInteraction} = notification;
         const serverUrl = await this.getServerUrlFromNotification(notification);
+        logDebug('PushNotifications.handleMessageNotification', serverUrl,
+            'foreground=', foreground, 'userInteraction=', userInteraction,
+            'channelId=', payload?.channel_id, 'postId=', payload?.post_id,
+            'rootId=', payload?.root_id, 'ackId=', payload?.ack_id);
+
         if (serverUrl) {
             if (foreground) {
                 // Move this to a local action
@@ -217,6 +237,8 @@ class PushNotificationsSingleton {
 
     processNotification = async (notification: NotificationWithData) => {
         const {payload} = notification;
+        logDebug('PushNotifications.processNotification: type=', payload?.type,
+            'ackId=', payload?.ack_id);
 
         if (payload) {
             switch (payload.type) {
@@ -239,6 +261,7 @@ class PushNotificationsSingleton {
 
     // This triggers when a notification is tapped and the app was in the background (iOS)
     onNotificationOpened = (incoming: Notification, completion: () => void) => {
+        logDebug('PushNotifications.onNotificationOpened: user tapped a notification');
         const notification = convertToNotificationData(incoming, false);
         notification.userInteraction = true;
 
@@ -248,6 +271,8 @@ class PushNotificationsSingleton {
 
     // This triggers when the app was in the background (iOS)
     onNotificationReceivedBackground = async (incoming: Notification, completion: (response: NotificationBackgroundFetchResult) => void) => {
+        logDebug('PushNotifications.onNotificationReceivedBackground: type=', incoming.payload?.type,
+            'ackId=', incoming.payload?.ackId);
         if (incoming.payload.verified === 'false') {
             logDebug('not handling background notification because it was not verified, ackId=', incoming.payload.ackId);
 
@@ -267,6 +292,7 @@ class PushNotificationsSingleton {
         // including failures, for the same reason.
         try {
             await this.processNotification(notification);
+            logDebug('PushNotifications.onNotificationReceivedBackground: done, ackId=', incoming.payload?.ackId);
             completion(NotificationBackgroundFetchResult.NEW_DATA);
         } catch (error) {
             logWarning('onNotificationReceivedBackground', error);
@@ -277,6 +303,8 @@ class PushNotificationsSingleton {
     // This triggers when the app was in the foreground (Android and iOS)
     // Also triggers when the app was in the background (Android)
     onNotificationReceivedForeground = (incoming: Notification, completion: (response: NotificationCompletion) => void) => {
+        logDebug('PushNotifications.onNotificationReceivedForeground: appState=', AppState.currentState,
+            'type=', incoming.payload?.type, 'ackId=', incoming.payload?.ackId);
         if (incoming.payload.verified === 'false') {
             logDebug('not handling foreground notification because it was not verified, ackId=', incoming.payload.ackId);
             return;

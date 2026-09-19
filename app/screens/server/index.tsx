@@ -90,8 +90,14 @@ const Server = ({
     const [showAdvancedOptions, setShowAdvancedOptions] = useState<boolean>(false);
     const styles = getStyleSheet(theme);
     const {formatMessage} = intl;
-    const disableServerUrl = Boolean(managedConfig?.allowOtherServers === 'false' && managedConfig?.serverUrl);
     const additionalServer = launchType === Launch.AddServerFromDeepLink || launchType === Launch.AddServer;
+
+    // The server url is locked when an EMM forces it, or when the local config pins the app to a
+    // single server (AutoSelectServerUrl + DefaultServerUrl). Adding another server stays editable.
+    const disableServerUrl = Boolean(
+        (managedConfig?.allowOtherServers === 'false' && managedConfig?.serverUrl) ||
+        (LocalConfig.AutoSelectServerUrl && LocalConfig.DefaultServerUrl && !additionalServer),
+    );
 
     const animatedStyles = useScreenTransitionAnimation(animated);
 

@@ -13,6 +13,7 @@ import {
     PUSH_PROXY_STATUS_UNKNOWN,
     PUSH_PROXY_STATUS_VERIFIED,
 } from '@constants/push_proxy';
+import {getPushProxyAlertsEnabled} from '@queries/app/global';
 import EphemeralStore from '@store/ephemeral_store';
 
 import {
@@ -37,6 +38,7 @@ jest.mock('@actions/app/global', () => ({
 
 jest.mock('@queries/app/global', () => ({
     getPushDisabledInServerAcknowledged: jest.fn(),
+    getPushProxyAlertsEnabled: jest.fn(),
 }));
 
 jest.mock('@store/ephemeral_store', () => ({
@@ -60,6 +62,7 @@ describe('Notification utilities', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+        jest.mocked(getPushProxyAlertsEnabled).mockResolvedValue(true);
     });
 
     describe('canReceiveNotifications', () => {
@@ -81,6 +84,18 @@ describe('Notification utilities', () => {
 
             expect(EphemeralStore.setPushProxyVerificationState).toHaveBeenCalledWith(serverUrl, PUSH_PROXY_STATUS_UNKNOWN);
             expect(Alert.alert).toHaveBeenCalled();
+        });
+
+        test('does not alert when the setting is disabled', async () => {
+            const serverUrl = 'https://example.com';
+            jest.mocked(getPushProxyAlertsEnabled).mockResolvedValue(false);
+            (pushDisabledInServerAck as jest.Mock).mockResolvedValue(false);
+
+            await canReceiveNotifications(serverUrl, PUSH_PROXY_RESPONSE_NOT_AVAILABLE, intl);
+            await canReceiveNotifications(serverUrl, PUSH_PROXY_RESPONSE_UNKNOWN, intl);
+
+            expect(EphemeralStore.setPushProxyVerificationState).toHaveBeenCalledTimes(2);
+            expect(Alert.alert).not.toHaveBeenCalled();
         });
 
         test('handles default case', async () => {

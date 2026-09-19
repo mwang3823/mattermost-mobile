@@ -138,8 +138,10 @@ const ProfileForm = ({
                     };
                     break;
                 case USERNAME_FIELD:
+                    // The username is read-only in this build: it is provisioned by the
+                    // organisation, so members must not rename themselves.
                     fields[USERNAME_FIELD] = {
-                        isDisabled: service !== '',
+                        isDisabled: true,
                         maxLength: 22,
                         error: errorMessage,
                     };

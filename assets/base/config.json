@@ -1,12 +1,12 @@
 {
     "AuthUrlScheme": "mmauth://",
     "AuthUrlSchemeDev": "mmauthbeta://",
-    "DefaultServerUrl": "",
-    "DefaultServerName": "",
+    "DefaultServerUrl": "https://chat.thaiduongco.com",
+    "DefaultServerName": "TDC",
     "TestServerUrl": "http://localhost:8065",
-    "AutoSelectServerUrl": false,
+    "AutoSelectServerUrl": true,
 
-    "WebsiteURL": "https://mattermost.com",
+    "WebsiteURL": "https://thaiduongco.com",
     "ServerNoticeURL": "https://github.com/mattermost/mattermost-server/blob/master/NOTICE.txt",
     "MobileNoticeURL": "https://github.com/mattermost/mattermost-mobile/blob/master/NOTICE.txt",
 
@@ -31,5 +31,89 @@
     "CustomRequestHeaders": {},
     "CollectNetworkMetrics": false,
     "EnablePostListPerformance": false,
-    "EnableObservableProfiling": false
+    "EnableObservableProfiling": false,
+
+    "Build": {
+        "_help": "Toàn bộ cấu hình build iOS/Android. Sửa ở đây rồi chạy ./tdc.sh — mọi lệnh build/run đều đọc file này trước; hoặc chạy trực tiếp \"node scripts/build_config.js --apply\". Giá trị dạng ${TÊN_BIẾN} được lấy từ biến môi trường lúc build. Khối \"Build\" chỉ dùng lúc build và bị loại khỏi dist/assets/config.json nên không đi vào app.",
+
+        "App": {
+            "name": "Chathub ThaiDuongco",
+            "scheme": "mattermost",
+            "version": "1.0.0",
+            "buildNumber": 1
+        },
+
+        "Android": {
+            "applicationId": "com.thaiduongco.chat",
+            "javaPackage": "com.mattermost.rnbeta",
+            "mainActivity": "com.mattermost.rnbeta.MainActivity",
+            "minSdk": 24,
+            "compileSdk": 36,
+            "targetSdk": 36,
+            "buildTools": "36.0.0",
+            "ndk": "27.1.12297006",
+            "architectures": [
+                "armeabi-v7a",
+                "arm64-v8a",
+                "x86",
+                "x86_64"
+            ],
+            "newArch": true,
+            "hermes": true,
+            "edgeToEdge": false,
+            "buildTask": "assemble",
+            "separateApks": false,
+            "universalApk": false,
+            "googleServicesFile": "android/app/google-services.json",
+            "signing": {
+                "storeFile": "",
+                "keyAlias": "",
+                "storePassword": "${MATTERMOST_RELEASE_PASSWORD}",
+                "keyPassword": "${MATTERMOST_RELEASE_PASSWORD}"
+            },
+            "playStore": {
+                "packageName": "com.thaiduongco.chat",
+                "track": "internal",
+                "validateOnly": true
+            }
+        },
+
+        "Ios": {
+            "displayName": "Chathub ThaiDuongco",
+            "bundleId": "com.thaiduongco.chat",
+            "shareExtensionBundleId": "com.thaiduongco.chat.MattermostShare",
+            "notificationServiceBundleId": "com.thaiduongco.chat.NotificationService",
+            "appGroup": "group.com.thaiduongco.chat",
+            "icloudContainer": "iCloud.com.thaiduongco.chat",
+            "keychainGroup": "com.thaiduongco.chat",
+            "teamId": "UQ8HT4Q2XM",
+            "exportMethod": "development",
+            "matchType": "development",
+            "syncProvisioningProfiles": false,
+            "defaultSimulator": "",
+            "intune": {
+                "enabled": false,
+                "clientId": ""
+            }
+        },
+
+        "Sentry": {
+            "org": "",
+            "projectIos": "",
+            "projectAndroid": "",
+            "url": "https://sentry.io",
+            "authToken": "${SENTRY_AUTH_TOKEN}"
+        },
+
+        "Dev": {
+            "metroPort": 8081
+        },
+
+        "Fastlane": {
+            "replaceAssets": true,
+            "buildForRelease": true,
+            "betaBuild": false,
+            "extraEnv": {}
+        }
+    }
 }
