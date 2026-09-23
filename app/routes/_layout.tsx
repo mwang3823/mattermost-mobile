@@ -20,6 +20,7 @@ import {useThemeByAppearanceWithDefault} from '@context/theme';
 import useDidMount from '@hooks/did_mount';
 import {DEFAULT_LOCALE, getTranslations} from '@i18n';
 import {cleanup, initialize} from '@init/app';
+import {isSplashScreenClaimed} from '@init/splash';
 import InAppNotificationContainer from '@screens/in_app_notification';
 import ReviewAppContainer from '@screens/review_app';
 import ShareFeedbackContainer from '@screens/share_feedback';
@@ -96,7 +97,10 @@ export default function RootLayout() {
     });
 
     useEffect(() => {
-        if (appReady) {
+        // The initial route hides the splash screen itself once it knows where to navigate, so it
+        // stays visible while the app connects to the server. This only covers the launches that
+        // never render that route.
+        if (appReady && !isSplashScreenClaimed()) {
             SplashScreen.hideAsync();
         }
     }, [appReady]);

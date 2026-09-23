@@ -6,9 +6,12 @@
             android:src="@drawable/splash_background"
             android:tileMode="disabled" />
     </item>
-    <item>
+    <item
+        android:gravity="center"
+        android:width="216dp"
+        android:height="216dp">
         <bitmap
-            android:gravity="center"
+            android:gravity="fill"
             android:src="@drawable/splash"/>
     </item>
 </layer-list>

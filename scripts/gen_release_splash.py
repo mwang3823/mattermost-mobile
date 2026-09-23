@@ -17,7 +17,7 @@ def square(canvas, frac, bg=None):
     return im
 
 n = 0
-for dpi, size in [('mdpi',96),('hdpi',192),('xhdpi',288),('xxhdpi',384),('xxxhdpi',480)]:
+for dpi, size in [('mdpi',216),('hdpi',324),('xhdpi',432),('xxhdpi',648),('xxxhdpi',864)]:
     im = square(size, 0.94)
     for d in (f'android/drawable-{dpi}', f'android/drawable-night-{dpi}'):
         p = os.path.join(BASE, d, 'splash.png')

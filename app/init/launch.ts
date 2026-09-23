@@ -13,6 +13,7 @@ import {DeepLink, Events, Launch, PushNotification, Screens} from '@constants';
 import {PostTypes} from '@constants/post';
 import {getDefaultThemeByAppearance} from '@context/theme';
 import DatabaseManager from '@database/manager';
+import {autoConnectToDefaultServer, canAutoConnect} from '@init/auto_connect';
 import {getActiveServerUrl, getServerCredentials} from '@init/credentials';
 import PerformanceMetricsManager from '@managers/performance_metrics_manager';
 import {getLastViewedChannelIdAndServer, getLastViewedTeamIdAndServer, getLastViewedThreadIdAndServer, getOnboardingViewed} from '@queries/app/global';
@@ -36,6 +37,10 @@ import type {DeepLinkWithData, LaunchProps} from '@typings/launch';
 export type ExpoRouterLaunchResult = {
     route: string;
     params: Record<string, any>;
+
+    // Set when the launch flow connected to the server on its own, so the caller can
+    // surface the push proxy alert once the destination screen is rendered.
+    pushProxy?: {serverUrl: string; verification: string};
 };
 
 const initialNotificationTypes = [PushNotification.NOTIFICATION_TYPE.MESSAGE, PushNotification.NOTIFICATION_TYPE.SESSION];
@@ -211,6 +216,15 @@ export async function determineRouteFromLaunchProps(props: LaunchProps): Promise
                 theme: JSON.stringify(theme),
             },
         };
+    }
+
+    // The server url is pinned by the local configuration: connect from here so the app goes
+    // straight from the splash screen to the login screen without showing the server screen.
+    if (canAutoConnect(props)) {
+        const autoConnected = await autoConnectToDefaultServer(props, theme);
+        if (autoConnected) {
+            return autoConnected;
+        }
     }
 
     // Show server selection
