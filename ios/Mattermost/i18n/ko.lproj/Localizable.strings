@@ -496,8 +496,8 @@
 "mobile.action_menu.select_multiple" = "하나 이상의 옵션 선택";
 "mobile.add_team.join_team" = "다른 팀에 참여하기";
 "mobile.android.back_handler_exit" = "종료하려면 뒤로 가기를 다시 눌러주세요";
-"mobile.android.photos_permission_denied_description" = "사진을 서버에 업로드하거나 장치에 저장하세요. 설정을 열어 Mattermost 애플리케이션에 사진 라이브러리에 대한 읽기 및 쓰기 권한을 부여해주세요.";
-"mobile.android.photos_permission_denied_title" = "Mattermost 앱이 이 장치의 사진에 접근하려고 합니다";
+"mobile.android.photos_permission_denied_description" = "사진을 서버에 업로드하거나 장치에 저장하세요. 설정을 열어 Chathub ThaiDuongco 애플리케이션에 사진 라이브러리에 대한 읽기 및 쓰기 권한을 부여해주세요.";
+"mobile.android.photos_permission_denied_title" = "Chathub ThaiDuongco 앱이 이 장치의 사진에 접근하려고 합니다";
 "mobile.announcement_banner.title" = "공지";
 "mobile.calls_bluetooth" = "블루투스";
 "mobile.calls_call_ended" = "회의 종료됨";
@@ -609,8 +609,8 @@
 "mobile.calls_viewing_screen" = "{name}의 화면을 보고 있습니다";
 "mobile.calls_you" = "(당신)";
 "mobile.calls_you_2" = "당신";
-"mobile.camera_photo_permission_denied_description" = "사진을 찍어 서버에 업로드하거나 디바이스에 저장합니다. 설정을 열어 Mattermost 에 카메라에 대한 읽기 및 쓰기 액세스 권한을 부여합니다.";
-"mobile.camera_photo_permission_denied_title" = "Mattermost 앱이 이 장치의 카메라에 접근하려고 합니다";
+"mobile.camera_photo_permission_denied_description" = "사진을 찍어 서버에 업로드하거나 디바이스에 저장합니다. 설정을 열어 Chathub ThaiDuongco 에 카메라에 대한 읽기 및 쓰기 액세스 권한을 부여합니다.";
+"mobile.camera_photo_permission_denied_title" = "Chathub ThaiDuongco 앱이 이 장치의 카메라에 접근하려고 합니다";
 "mobile.channel_add_members.error" = "오류가 발생하여 해당 사용자를 채널에 추가할 수 없습니다.";
 "mobile.channel_info.alertNo" = "아니요";
 "mobile.channel_info.alertYes" = "네";
@@ -675,8 +675,8 @@
 "mobile.gallery.title" = "{total}개 중 {index}번째";
 "mobile.integration_selector.loading_channels" = "채널을 불러오는 중...";
 "mobile.integration_selector.loading_options" = "옵션 로딩중...";
-"mobile.ios.photos_permission_denied_description" = "사진과 동영상을 서버에 업로드하거나 디바이스에 저장합니다. 설정을 열어 Mattermost 에 사진 및 동영상 라이브러리에 대한 읽기 및 쓰기 액세스 권한을 부여합니다.";
-"mobile.ios.photos_permission_denied_title" = "Mattermost 앱이 이 장치의 사진에 접근하려고 합니다";
+"mobile.ios.photos_permission_denied_description" = "사진과 동영상을 서버에 업로드하거나 디바이스에 저장합니다. 설정을 열어 Chathub ThaiDuongco 에 사진 및 동영상 라이브러리에 대한 읽기 및 쓰기 액세스 권한을 부여합니다.";
+"mobile.ios.photos_permission_denied_title" = "Chathub ThaiDuongco 앱이 이 장치의 사진에 접근하려고 합니다";
 "mobile.join_channel.error" = "{displayName} 채널에 가입할 수 없습니다.";
 "mobile.leave_and_create_message" = "이미 ~{leaveChannelName}에서 채널 통화를 하고 있습니다. 현재 통화를 종료하고 ~{joinChannelName}에서 새 통화를 시작하시겠습니까?";
 "mobile.leave_and_join_confirmation" = "나가기 및 참여하기";
@@ -849,8 +849,8 @@
 "mobile.set_status.dnd" = "방해 금지";
 "mobile.set_status.offline" = "오프라인 아이콘";
 "mobile.set_status.online" = "오프라인 아이콘";
-"mobile.storage_permission_denied_description" = "서버에 파일을 업로드합니다. 설정을 열어 Mattermost 에 이 장치의 파일에 대한 읽기 및 쓰기 액세스 권한을 부여합니다.";
-"mobile.storage_permission_denied_title" = "Mattermost 앱이 이 장치의 파일에 접근하려고 합니다";
+"mobile.storage_permission_denied_description" = "서버에 파일을 업로드합니다. 설정을 열어 Chathub ThaiDuongco 에 이 장치의 파일에 대한 읽기 및 쓰기 액세스 권한을 부여합니다.";
+"mobile.storage_permission_denied_title" = "Chathub ThaiDuongco 앱이 이 장치의 파일에 접근하려고 합니다";
 "mobile.suggestion.members" = "구성원";
 "mobile.system_message.channel_archived_message" = "{username}님이 채널을 보관했습니다";
 "mobile.system_message.channel_unarchived_message" = "{username}님이 채널을 보관 해제했습니다";
@@ -863,7 +863,7 @@
 "mobile.system_message.update_channel_purpose_message.updated_to" = "{username}님이 채널 목적을 {newPurpose}(으)로 변경했습니다";
 "mobile.tos_link" = "이용약관";
 "mobile.user_list.deactivated" = "비활성화";
-"mobile.write_storage_permission_denied_description" = "장치에 파일을 저장합니다. 설정을 열어 이 장치의 파일에 Mattermost 쓰기 권한을 부여합니다.";
+"mobile.write_storage_permission_denied_description" = "장치에 파일을 저장합니다. 설정을 열어 이 장치의 파일에 Chathub ThaiDuongco 쓰기 권한을 부여합니다.";
 "modal.manual_status.auto_responder.message_" = "상태를 \"{status}\"로 변경하고 자동 답글을 비활성화하시겠습니까?";
 "more_messages.text" = "{count}건의 새 {count, plural, one {message} other {messages}}";
 "msg_typing.areTyping" = "{users}, {last}(이)가 입력중입니다...";
@@ -1243,7 +1243,7 @@
 "share_extension.channel_label" = "채널";
 "share_extension.channels_screen.title" = "채널 선택";
 "share_extension.count_limit" = "이 서버에서는 {count, number} {count, plural, one {file} other {files}}만 공유할 수 있습니다";
-"share_extension.error_screen.description" = "Mattermost 으로 콘텐츠를 공유하려고 할 때 오류가 발생했습니다.";
+"share_extension.error_screen.description" = "Chathub ThaiDuongco 으로 콘텐츠를 공유하려고 할 때 오류가 발생했습니다.";
 "share_extension.error_screen.label" = "오류가 발생했습니다";
 "share_extension.error_screen.reason" = "이유: {reason}";
 "share_extension.file_limit.multiple" = "각 파일은 다음보다 작아야 합니다. {size}";
@@ -1253,7 +1253,7 @@
 "share_extension.multiple_label" = "{count, number} 첨부 파일";
 "share_extension.server_label" = "서버";
 "share_extension.servers_screen.title" = "서버 선택";
-"share_extension.share_screen.title" = "공유 대상 Mattermost";
+"share_extension.share_screen.title" = "공유 대상 Chathub ThaiDuongco";
 "share_extension.upload_disabled" = "선택한 서버에 대해 파일 업로드가 비활성화됩니다";
 "share_feedback.button.no" = "아니요, 괜찮습니다";
 "share_feedback.button.yes" = "예";

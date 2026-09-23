@@ -673,8 +673,8 @@ Bạn có chắc chắn muốn chuyển đổi {displayName} thành một kênh 
 "mobile.action_menu.select_multiple" = "Chọn một hoặc nhiều tuỳ chọn";
 "mobile.add_team.join_team" = "Tham gia nhóm khác";
 "mobile.android.back_handler_exit" = "Nhấn quay lại một lần nữa để thoát";
-"mobile.android.photos_permission_denied_description" = "Tải ảnh lên máy chủ của bạn hoặc lưu chúng vào thiết bị. Mở Cài đặt để cấp cho Mattermost quyền Đọc và ghi vào thư viện ảnh của bạn.";
-"mobile.android.photos_permission_denied_title" = "Mattermost muốn truy cập ảnh của bạn";
+"mobile.android.photos_permission_denied_description" = "Tải ảnh lên máy chủ của bạn hoặc lưu chúng vào thiết bị. Mở Cài đặt để cấp cho Chathub ThaiDuongco quyền Đọc và ghi vào thư viện ảnh của bạn.";
+"mobile.android.photos_permission_denied_title" = "Chathub ThaiDuongco muốn truy cập ảnh của bạn";
 "mobile.announcement_banner.title" = "Thông báo";
 "mobile.burn_on_read.delete_now.receiver.body" = "Tin nhắn này sẽ bị xoá vĩnh viễn đối với bạn ngay lập tức và không thể hoàn tác.";
 "mobile.burn_on_read.delete_now.sender.body" = "Tin nhắn này sẽ bị xoá vĩnh viễn đối với tất cả người nhận ngay lập tức. Hành động này không thể hoàn tác. Bạn có chắc muốn xoá tin nhắn này?";
@@ -796,8 +796,8 @@ Bạn có chắc chắn muốn chuyển đổi {displayName} thành một kênh 
 "mobile.calls_viewing_screen" = "Bạn đang xem màn hình của {name}";
 "mobile.calls_you" = "(bạn)";
 "mobile.calls_you_2" = "Bạn";
-"mobile.camera_photo_permission_denied_description" = "Chụp ảnh và tải lên máy chủ của bạn hoặc lưu chúng vào thiết bị. Mở Cài đặt để cấp cho Mattermost quyền đọc và ghi vào máy ảnh của bạn.";
-"mobile.camera_photo_permission_denied_title" = "Mattermost muốn truy cập vào máy ảnh của bạn";
+"mobile.camera_photo_permission_denied_description" = "Chụp ảnh và tải lên máy chủ của bạn hoặc lưu chúng vào thiết bị. Mở Cài đặt để cấp cho Chathub ThaiDuongco quyền đọc và ghi vào máy ảnh của bạn.";
+"mobile.camera_photo_permission_denied_title" = "Chathub ThaiDuongco muốn truy cập vào máy ảnh của bạn";
 "mobile.channel_add_members.error" = "Đã xảy ra lỗi và chúng tôi không thể thêm những người dùng đó vào kênh.";
 "mobile.channel_info.alertNo" = "Không";
 "mobile.channel_info.alertYes" = "Có";
@@ -885,9 +885,9 @@ Nhấn khởi chạy lại để mở lại ứng dụng. Sau khi khởi động
 "mobile.intune.compliance.user_cancelled" = "Đăng nhập đã bị huỷ. Vui lòng thử lại.";
 "mobile.intune.login.canceled" = "Đăng nhập đã bị huỷ. Vui lòng thử lại";
 "mobile.intune.login.failed" = "Xác thực thất bại. Vui lòng thử lại";
-"mobile.ios.calls.incoming_call_placeholder" = "Cuộc gọi Mattermost";
-"mobile.ios.photos_permission_denied_description" = "Tải ảnh và video lên máy chủ của bạn hoặc lưu chúng vào thiết bị. Mở Cài đặt để cấp cho Mattermost quyền Đọc và ghi vào thư viện ảnh và video của bạn.";
-"mobile.ios.photos_permission_denied_title" = "Mattermost muốn truy cập ảnh của bạn";
+"mobile.ios.calls.incoming_call_placeholder" = "Cuộc gọi Chathub ThaiDuongco";
+"mobile.ios.photos_permission_denied_description" = "Tải ảnh và video lên máy chủ của bạn hoặc lưu chúng vào thiết bị. Mở Cài đặt để cấp cho Chathub ThaiDuongco quyền Đọc và ghi vào thư viện ảnh và video của bạn.";
+"mobile.ios.photos_permission_denied_title" = "Chathub ThaiDuongco muốn truy cập ảnh của bạn";
 "mobile.join_channel.error" = "Chúng tôi không thể mở một tin nhắn trực tiếp với {displayName}. Vui lòng kiểm tra kết nối của bạn và thử lại.";
 "mobile.leave_and_create_message" = "Bạn đang tham gia cuộc gọi kênh trong ~{leaveChannelName}. Bạn có muốn rời cuộc gọi hiện tại và bắt đầu cuộc gọi mới trong ~{joinChannelName}?";
 "mobile.leave_and_join_confirmation" = "Rời khỏi & Tham gia";
@@ -1070,8 +1070,8 @@ Cần nâng cấp máy chủ để sử dụng ứng dụng Mattermost. Vui lòn
 "mobile.set_status.dnd" = "Đừng làm phiền";
 "mobile.set_status.offline" = "Ngoại tuyến";
 "mobile.set_status.online" = "Trực tuyến";
-"mobile.storage_permission_denied_description" = "Tải tệp lên máy chủ của bạn. Mở Cài đặt để cấp cho Mattermost quyền Đọc và ghi tệp trên thiết bị này.";
-"mobile.storage_permission_denied_title" = "Mattermost muốn truy cập tệp của bạn";
+"mobile.storage_permission_denied_description" = "Tải tệp lên máy chủ của bạn. Mở Cài đặt để cấp cho Chathub ThaiDuongco quyền Đọc và ghi tệp trên thiết bị này.";
+"mobile.storage_permission_denied_title" = "Chathub ThaiDuongco muốn truy cập tệp của bạn";
 "mobile.suggestion.members" = "Các thành viên";
 "mobile.system_message.channel_archived_message" = "{username} đã lưu trữ kênh";
 "mobile.system_message.channel_unarchived_message" = "{username} đã hủy lưu trữ kênh";
@@ -1091,7 +1091,7 @@ Cần nâng cấp máy chủ để sử dụng ứng dụng Mattermost. Vui lòn
 "mobile.translation.original_badge" = "BẢN GỐC";
 "mobile.translation.unknown_language" = "Không xác định";
 "mobile.user_list.deactivated" = "Vô hiệu hóa";
-"mobile.write_storage_permission_denied_description" = "Lưu tập tin vào thiết bị của bạn. Mở Cài đặt để cấp cho Mattermost quyền ghi vào các tệp trên thiết bị này.";
+"mobile.write_storage_permission_denied_description" = "Lưu tập tin vào thiết bị của bạn. Mở Cài đặt để cấp cho Chathub ThaiDuongco quyền ghi vào các tệp trên thiết bị này.";
 "modal.manual_status.auto_responder.message_" = "Bạn có muốn chuyển trạng thái của mình thành \"{status} \"và tắt Trả lời tự động không?";
 "more_messages.text" = "{count} new {count, plural, one {tin nhắn} other {tin nhắn}}";
 "msg_typing.areTyping" = "{users} và {last} đang gõ...";
@@ -1574,6 +1574,8 @@ Bạn có thể đang kết nối với một máy chủ giả danh “{hostname
 "settings.advanced.delete_message.confirmation" = "
 Điều này sẽ xóa tất cả các tệp được tải xuống thông qua ứng dụng dành cho máy chủ này. Vui lòng xác nhận để tiếp tục.
 ";
+"settings.advanced.push_alerts" = "Cảnh báo lỗi thông báo";
+"settings.advanced.push_alerts.description" = "Hiển thị cảnh báo khi không thể nhận thông báo từ máy chủ.";
 "settings.advanced_settings" = "Cài đặt nâng cao";
 "settings.advanced_settings.component_library" = "Thư viện thành phần";
 "settings.display" = "Hiển thị";
@@ -1597,7 +1599,7 @@ Bạn có thể đang kết nối với một máy chủ giả danh “{hostname
 "share_extension.channel_label" = "Kênh";
 "share_extension.channels_screen.title" = "Chọn kênh";
 "share_extension.count_limit" = "Bạn chỉ có thể chia sẻ {count, number} {count, plural, one {tệp} other {tệp}} trên máy chủ này";
-"share_extension.error_screen.description" = "Đã xảy ra lỗi khi cố gắng chia sẻ nội dung với Mattermost.";
+"share_extension.error_screen.description" = "Đã xảy ra lỗi khi cố gắng chia sẻ nội dung với Chathub ThaiDuongco.";
 "share_extension.error_screen.label" = "Một lỗi xảy ra";
 "share_extension.error_screen.reason" = "Lý do: {reason}";
 "share_extension.file_limit.multiple" = "Mỗi tệp phải nhỏ hơn {size}";
@@ -1608,7 +1610,7 @@ Bạn có thể đang kết nối với một máy chủ giả danh “{hostname
 "share_extension.server_item.zero_persistence_unavailable" = "Không thể chia sẻ với máy chủ này";
 "share_extension.server_label" = "Máy chủ";
 "share_extension.servers_screen.title" = "Chọn máy chủ";
-"share_extension.share_screen.title" = "Chia sẻ đến Mattermost";
+"share_extension.share_screen.title" = "Chia sẻ đến Chathub ThaiDuongco";
 "share_extension.upload_disabled" = "Tải lên tệp bị vô hiệu hóa cho máy chủ đã chọn";
 "share_feedback.button.no" = "Không, cám ơn";
 "share_feedback.button.yes" = "Đồng ý";

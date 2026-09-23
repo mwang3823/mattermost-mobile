@@ -4,7 +4,7 @@
 <dict>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.com.thaiduongco.chat</string>
+		<string>group.com.thaiduongo.chat</string>
 	</array>
 </dict>
 </plist>

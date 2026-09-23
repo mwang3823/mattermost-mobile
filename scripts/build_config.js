@@ -159,6 +159,7 @@ function validate(cfg) {
     need(String(i.appGroup).startsWith('group.'), 'Build.Ios.appGroup phải bắt đầu bằng "group."');
     need(String(i.icloudContainer).startsWith('iCloud.'), 'Build.Ios.icloudContainer phải bắt đầu bằng "iCloud."');
     need(Boolean(i.keychainGroup), 'Build.Ios.keychainGroup không được trống');
+    need(['development', 'production'].includes(String(i.apsEnvironment)), 'Build.Ios.apsEnvironment chỉ nhận "development" hoặc "production"');
     if (i.intune && i.intune.enabled) {
         need(Boolean(i.intune.clientId), 'Build.Ios.intune.clientId bắt buộc khi intune.enabled = true');
     }
@@ -359,6 +360,7 @@ function buildEdits(cfg) {
     for (const [file, isMain] of entitlements) {
         plistEdit(edits, file, 'com.apple.security.application-groups', 'application-groups', i.appGroup);
         if (isMain) {
+            plistEdit(edits, file, 'aps-environment', 'aps-environment', i.apsEnvironment);
             plistEdit(edits, file, 'com.apple.developer.icloud-container-identifiers', 'icloud-container', i.icloudContainer);
             plistEdit(edits, file, 'com.apple.developer.ubiquity-container-identifiers', 'ubiquity-container', i.icloudContainer);
             plistEdit(edits, file, 'keychain-access-groups', 'keychain-access-groups', `$(AppIdentifierPrefix)${i.keychainGroup}`);
@@ -542,6 +544,7 @@ function printSummary(cfg) {
     line('iCloud container', b.Ios.icloudContainer);
     line('Keychain group', b.Ios.keychainGroup);
     line('Team ID', b.Ios.teamId || '-');
+    line('Push (aps-environment)', b.Ios.apsEnvironment);
     line('Xuất bản', `${b.Ios.exportMethod} / match ${b.Ios.matchType} / sync profiles ${b.Ios.syncProvisioningProfiles}`);
     line('Simulator', b.Ios.defaultSimulator || 'mặc định của Xcode');
     line('Intune', b.Ios.intune.enabled ? `bật (${b.Ios.intune.clientId})` : 'tắt');

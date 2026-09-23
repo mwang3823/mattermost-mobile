@@ -453,8 +453,8 @@
 "mobile.action_menu.select" = "選取選項";
 "mobile.add_team.join_team" = "加入其他團隊";
 "mobile.android.back_handler_exit" = "再按一次退回以離開";
-"mobile.android.photos_permission_denied_description" = "上傳圖片至您的伺服器或儲存至您的裝置。開啟設定來授予 Mattermost 對您的圖片庫的讀取及寫入權限。";
-"mobile.android.photos_permission_denied_title" = "Mattermost 想要存取您的圖片";
+"mobile.android.photos_permission_denied_description" = "上傳圖片至您的伺服器或儲存至您的裝置。開啟設定來授予 Chathub ThaiDuongco 對您的圖片庫的讀取及寫入權限。";
+"mobile.android.photos_permission_denied_title" = "Chathub ThaiDuongco 想要存取您的圖片";
 "mobile.announcement_banner.title" = "宣布";
 "mobile.calls_bluetooth" = "藍牙";
 "mobile.calls_call_ended" = "通話已結束";
@@ -566,8 +566,8 @@
 "mobile.calls_viewing_screen" = "正在檢視 {name} 的螢幕畫面";
 "mobile.calls_you" = "（您）";
 "mobile.calls_you_2" = "您";
-"mobile.camera_photo_permission_denied_description" = "上傳圖片至您的伺服器或儲存至您的裝置。開啟設定來准許 Mattermost 對您的相機的讀取及寫入權限。";
-"mobile.camera_photo_permission_denied_title" = "Mattermost 想要存取您的相機";
+"mobile.camera_photo_permission_denied_description" = "上傳圖片至您的伺服器或儲存至您的裝置。開啟設定來准許 Chathub ThaiDuongco 對您的相機的讀取及寫入權限。";
+"mobile.camera_photo_permission_denied_title" = "Chathub ThaiDuongco 想要存取您的相機";
 "mobile.channel_add_members.error" = "發生錯誤，因此我們無法將使用者新增至頻道。";
 "mobile.channel_info.alertNo" = "否";
 "mobile.channel_info.alertYes" = "是";
@@ -626,8 +626,8 @@
 "mobile.gallery.title" = "{index}/{total}";
 "mobile.integration_selector.loading_channels" = "正在載入頻道…";
 "mobile.integration_selector.loading_options" = "正在載入選項…";
-"mobile.ios.photos_permission_denied_description" = "上傳圖片及影片至您的伺服器或儲存至您的裝置。開啟設定來准許 Mattermost 取得您的圖片及影片庫的讀取與寫入權限。";
-"mobile.ios.photos_permission_denied_title" = "Mattermost 想要存取您的圖片";
+"mobile.ios.photos_permission_denied_description" = "上傳圖片及影片至您的伺服器或儲存至您的裝置。開啟設定來准許 Chathub ThaiDuongco 取得您的圖片及影片庫的讀取與寫入權限。";
+"mobile.ios.photos_permission_denied_title" = "Chathub ThaiDuongco 想要存取您的圖片";
 "mobile.join_channel.error" = "我們無法加入頻道 {displayName}。";
 "mobile.leave_and_join_confirmation" = "退出並加入";
 "mobile.leave_and_join_message" = "您已在 ~{leaveChannelName} 的群組通話中。確定要離開目前的通話並加入 ~{joinChannelName} 的嗎？";
@@ -774,8 +774,8 @@
 "mobile.session_expired_days_hrs" = "請登入以繼續接收通知。{siteName} 的工作階段設定為每 {daysCount, number} {daysCount, plural, one {天} other {天}} 又 {hoursCount, number} {hoursCount, plural, one {小時} other {小時}}過期。";
 "mobile.session_expired_hrs" = "請登入以繼續接收通知。{siteName} 的工作階段設定為每{hoursCount, number} {hoursCount, plural, one {小時} other {小時}}過期。";
 "mobile.set_status.dnd" = "請勿打擾";
-"mobile.storage_permission_denied_description" = "上傳檔案至您的伺服器。開啟設定以准許 Mattermost 取得此裝置的檔案讀寫權限。";
-"mobile.storage_permission_denied_title" = "Mattermost 想要存取您的檔案";
+"mobile.storage_permission_denied_description" = "上傳檔案至您的伺服器。開啟設定以准許 Chathub ThaiDuongco 取得此裝置的檔案讀寫權限。";
+"mobile.storage_permission_denied_title" = "Chathub ThaiDuongco 想要存取您的檔案";
 "mobile.suggestion.members" = "成員";
 "mobile.system_message.channel_archived_message" = "{username} 已封存頻道";
 "mobile.system_message.channel_unarchived_message" = "{username} 已解除頻道封存";
@@ -788,7 +788,7 @@
 "mobile.system_message.update_channel_purpose_message.updated_to" = "{username} 已更新頻道用途為：{newPurpose}";
 "mobile.tos_link" = "服務條款";
 "mobile.user_list.deactivated" = "被停權";
-"mobile.write_storage_permission_denied_description" = "儲存檔案至您的裝置。開啟設定以准許 Mattermost 取得此裝置的檔案寫入權限。";
+"mobile.write_storage_permission_denied_description" = "儲存檔案至您的裝置。開啟設定以准許 Chathub ThaiDuongco 取得此裝置的檔案寫入權限。";
 "modal.manual_status.auto_responder.message_" = "是否將狀態改為「{status}」並停用自動回覆？";
 "more_messages.text" = "{count} 則{count, plural, one {新訊息} other {新訊息}}";
 "msg_typing.areTyping" = "{users} 跟 {last} 正在輸入…";
@@ -1047,7 +1047,7 @@
 "share_extension.channel_label" = "頻道";
 "share_extension.channels_screen.title" = "選取頻道";
 "share_extension.count_limit" = "您在此伺服器上只能分享{count, number} {count, plural, one {個檔案} other {個檔案}}";
-"share_extension.error_screen.description" = "試圖分享內容至 Mattermost 時發生錯誤。";
+"share_extension.error_screen.description" = "試圖分享內容至 Chathub ThaiDuongco 時發生錯誤。";
 "share_extension.error_screen.label" = "發生錯誤";
 "share_extension.error_screen.reason" = "原因：{reason}";
 "share_extension.file_limit.multiple" = "每個檔案必須小於 {size}";
@@ -1057,7 +1057,7 @@
 "share_extension.multiple_label" = "{count, number}個附件";
 "share_extension.server_label" = "伺服器";
 "share_extension.servers_screen.title" = "選取伺服器";
-"share_extension.share_screen.title" = "分享至 Mattermost";
+"share_extension.share_screen.title" = "分享至 Chathub ThaiDuongco";
 "share_extension.upload_disabled" = "選定的伺服器已停用檔案上傳";
 "share_feedback.button.no" = "不用了，謝謝";
 "share_feedback.button.yes" = "是";

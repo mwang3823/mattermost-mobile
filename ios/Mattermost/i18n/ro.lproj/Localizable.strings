@@ -113,7 +113,7 @@
 "mobile.action_menu.select" = "Selectează o opțiune";
 "mobile.android.back_handler_exit" = "Apăsați inapoi din nou pentru a ieși";
 "mobile.android.photos_permission_denied_title" = "Este necesar accesul la biblioteca foto";
-"mobile.camera_photo_permission_denied_title" = "Mattermost ar dori pentru a accesa aparatul de fotografiat";
+"mobile.camera_photo_permission_denied_title" = "Chathub ThaiDuongco ar dori pentru a accesa aparatul de fotografiat";
 "mobile.channel_info.alertNo" = "Nu";
 "mobile.channel_info.alertYes" = "Da";
 "mobile.commands.error_title" = "Eroare la executarea comenzii Exif";
@@ -211,7 +211,7 @@ Accesați Setări > ID-ul feței și codul de acces.";
 "mobile.server_url.empty" = "Vă rugăm să introduceți o adresă URL de server validă";
 "mobile.server_url.invalid_format" = "Adresa URL trebuie să înceapă cu http: // sau https: //";
 "mobile.set_status.dnd" = "Nu deranjaţi";
-"mobile.storage_permission_denied_title" = "Mattermost ar dori să vă acceseze fișierele";
+"mobile.storage_permission_denied_title" = "Chathub ThaiDuongco ar dori să vă acceseze fișierele";
 "mobile.suggestion.members" = "Membrii";
 "mobile.system_message.channel_archived_message" = "{username} a arhivat canalul";
 "mobile.system_message.channel_unarchived_message" = "{username} a dezarhivat canalul";

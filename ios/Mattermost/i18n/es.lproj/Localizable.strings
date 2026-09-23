@@ -470,8 +470,8 @@ El cambio es permanente y no puede deshacerse.
 "mobile.action_menu.select" = "Selecciona una opción";
 "mobile.add_team.join_team" = "Unirse a otro Equipo";
 "mobile.android.back_handler_exit" = "Presione de nuevo para salir";
-"mobile.android.photos_permission_denied_description" = "Sube fotos a tu servidor o guárdalas en tu dispositivo. Abre Ajustes para conceder a Mattermost permisos de Lectura y Escritura a tu biblioteca de fotos.";
-"mobile.android.photos_permission_denied_title" = "Mattermost desea acceder a tus fotos";
+"mobile.android.photos_permission_denied_description" = "Sube fotos a tu servidor o guárdalas en tu dispositivo. Abre Ajustes para conceder a Chathub ThaiDuongco permisos de Lectura y Escritura a tu biblioteca de fotos.";
+"mobile.android.photos_permission_denied_title" = "Chathub ThaiDuongco desea acceder a tus fotos";
 "mobile.announcement_banner.title" = "Anuncio";
 "mobile.calls_bluetooth" = "Bluetooth";
 "mobile.calls_call_ended" = "La llamada terminó";
@@ -555,8 +555,8 @@ El cambio es permanente y no puede deshacerse.
 "mobile.calls_viewing_screen" = "Está viendo la pantalla de {name}";
 "mobile.calls_you" = "(tú)";
 "mobile.calls_you_2" = "Tú";
-"mobile.camera_photo_permission_denied_description" = "Toma fotos y súbelas a tu servidor o guárdalas en tu dispositivo. Abre Ajustes para otorgar permisos de lectura y escritura a Mattermost a tu cámara.";
-"mobile.camera_photo_permission_denied_title" = "Mattermost desea acceder a tu cámara";
+"mobile.camera_photo_permission_denied_description" = "Toma fotos y súbelas a tu servidor o guárdalas en tu dispositivo. Abre Ajustes para otorgar permisos de lectura y escritura a Chathub ThaiDuongco a tu cámara.";
+"mobile.camera_photo_permission_denied_title" = "Chathub ThaiDuongco desea acceder a tu cámara";
 "mobile.channel_add_members.error" = "Hubo un error y no pudimos añadir a esos usuarios al canal.";
 "mobile.channel_info.alertNo" = "No";
 "mobile.channel_info.alertYes" = "Sí";
@@ -615,8 +615,8 @@ Presiona reiniciar para abrir la aplicación de nuevo. Después de reiniciar, pu
 "mobile.gallery.title" = "{index} de {total}";
 "mobile.integration_selector.loading_channels" = "Cargando canales...";
 "mobile.integration_selector.loading_options" = "Cargando opciones...";
-"mobile.ios.photos_permission_denied_description" = "Sube fotos y videos a tu servidor o guárdalos en tu dispositivo. Abre Ajustes para otorgar a Mattermost permisos de Lectura y escritura en tu biblioteca de fotos y videos.";
-"mobile.ios.photos_permission_denied_title" = "Mattermost desea acceder a tu librería de fotos";
+"mobile.ios.photos_permission_denied_description" = "Sube fotos y videos a tu servidor o guárdalos en tu dispositivo. Abre Ajustes para otorgar a Chathub ThaiDuongco permisos de Lectura y escritura en tu biblioteca de fotos y videos.";
+"mobile.ios.photos_permission_denied_title" = "Chathub ThaiDuongco desea acceder a tu librería de fotos";
 "mobile.join_channel.error" = "No pudimos unirmos al canal {displayName}.";
 "mobile.leave_and_join_confirmation" = "Abandonar y unirse";
 "mobile.leave_and_join_message" = "Ya estás en una llamada de canal en ~{leaveChannelName}- ¿Quieres abandonar la llamada actual y unirte a la llamada en ~{joinChannelName}?";
@@ -764,8 +764,8 @@ Se requiere una actualización de servidor para usar la app Mattermost. Por favo
 "mobile.session_expired_days_hrs" = "Por favor inicia sesión para continuar recibiendo notificaciones. Las sesiones para {siteName} están configuradas para expirar cada {daysCount, number} {daysCount, plural, one {day} other {days}} and {hoursCount, number} {hoursCount, plural, one {hour} other {hours}}.";
 "mobile.session_expired_hrs" = "Por favor inicia sesión para continuar recibiendo notificaciones. Las sesiones para {siteName} están configuradas para expirar cada {hoursCount, number} {hoursCount, plural, one {hour} other {hours}}.";
 "mobile.set_status.dnd" = "No Molestar";
-"mobile.storage_permission_denied_description" = "Sube archivos a tu servidor. Abre Ajustes para otorgar a Mattermost permisos de Lectura y Escritura a los archivos en este dispositivo.";
-"mobile.storage_permission_denied_title" = "Mattermost desea acceder a tus archivos";
+"mobile.storage_permission_denied_description" = "Sube archivos a tu servidor. Abre Ajustes para otorgar a Chathub ThaiDuongco permisos de Lectura y Escritura a los archivos en este dispositivo.";
+"mobile.storage_permission_denied_title" = "Chathub ThaiDuongco desea acceder a tus archivos";
 "mobile.suggestion.members" = "Miembros";
 "mobile.system_message.channel_archived_message" = "{username} archivó el canal";
 "mobile.system_message.channel_unarchived_message" = "{username} restauró el canal";
@@ -778,7 +778,7 @@ Se requiere una actualización de servidor para usar la app Mattermost. Por favo
 "mobile.system_message.update_channel_purpose_message.updated_to" = "{username} ha actualizado el propósito del canal a: {newPurpose}";
 "mobile.tos_link" = "Términos de Servicio";
 "mobile.user_list.deactivated" = "Desactivado";
-"mobile.write_storage_permission_denied_description" = "Guarda archivos en tu dispositivo. Abre Ajustes para otorgar a Mattermost permisos de escritura de archivos en este dispositivo.";
+"mobile.write_storage_permission_denied_description" = "Guarda archivos en tu dispositivo. Abre Ajustes para otorgar a Chathub ThaiDuongco permisos de escritura de archivos en este dispositivo.";
 "modal.manual_status.auto_responder.message_" = "¿Quieres cambiar to estado a \"{status}\" e inhabilitar las respuestas automáticas?";
 "more_messages.text" = "{count} nuevos {count, plural, one {mensaje} other {mensajes}}";
 "msg_typing.areTyping" = "{users} y {last} están escribiendo...";
@@ -1020,7 +1020,7 @@ Esto eliminará todos los archivos descargados a través de la aplicación para 
 "share_extension.channel_label" = "Canal";
 "share_extension.channels_screen.title" = "Seleccionar canal";
 "share_extension.count_limit" = "Sólo puede compartir {count, number} {contar, plural, un {archivo} otros {archivos}} en este servidor";
-"share_extension.error_screen.description" = "Hubo un error al intentar compartir el contenido a Mattermost.";
+"share_extension.error_screen.description" = "Hubo un error al intentar compartir el contenido a Chathub ThaiDuongco.";
 "share_extension.error_screen.label" = "Ocurrió un error";
 "share_extension.error_screen.reason" = "Motivo: {reason}";
 "share_extension.file_limit.multiple" = "Cada archivo debe tener un tamaño inferior a {size}";
@@ -1030,7 +1030,7 @@ Esto eliminará todos los archivos descargados a través de la aplicación para 
 "share_extension.multiple_label" = "{count, number} archivos adjuntos";
 "share_extension.server_label" = "Servidor";
 "share_extension.servers_screen.title" = "Seleccionar servidor";
-"share_extension.share_screen.title" = "Compartir con Mattermost";
+"share_extension.share_screen.title" = "Compartir con Chathub ThaiDuongco";
 "share_extension.upload_disabled" = "La carga de archivos está desactivada para el servidor seleccionado";
 "share_feedback.button.no" = "No, gracias";
 "share_feedback.button.yes" = "Sí";

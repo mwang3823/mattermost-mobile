@@ -727,6 +727,69 @@ ios_sim_pick() {
     return 0
 }
 
+# Liệt kê iPhone/iPad đang kết nối. Máy đã rút cáp/khoá vẫn hiện trong Xcode nhưng
+# build xong mới fail ở bước cài (xcodebuild code 70), nên chỉ cho chọn máy nối được.
+IOSDEV=''
+IOSDEV_NAME=''
+
+# In "trạng thái|tên|udid" cho từng thiết bị (trạng thái: connected/…)
+ios_devices() {
+    local json
+    json=$(mktemp -t tdcdev) || return 1
+    xcrun devicectl list devices --json-output "$json" >/dev/null 2>&1
+    python3 - "$json" <<'PYEOF'
+import json, sys
+try:
+    d = json.load(open(sys.argv[1]))
+except Exception:
+    sys.exit(0)
+for x in d.get('result', {}).get('devices', []):
+    cp = x.get('connectionProperties', {})
+    dp = x.get('deviceProperties', {})
+    hp = x.get('hardwareProperties', {})
+    print('|'.join([
+        cp.get('tunnelState', '?'),
+        '%s (iOS %s)' % (dp.get('name', '?'), dp.get('osVersionNumber', '?')),
+        hp.get('udid', ''),
+    ]))
+PYEOF
+    rm -f "$json"
+}
+
+ios_device_pick() {
+    IOSDEV=''
+    local -a names udids
+    local line state name udid
+    while IFS='|' read -r state name udid; do
+        [ -n "$udid" ] || continue
+        [ "$state" = connected ] || continue
+        names+=("$name")
+        udids+=("$udid")
+    done < <(ios_devices)
+
+    if [ ${#names[@]} -eq 0 ]; then
+        printf '\n%s  Không có iPhone/iPad nào đang kết nối.%s\n\n' "$YLW" "$R"
+        printf '  Cắm cáp (hoặc bật Wi-Fi sync), %smở khoá máy%s rồi bấm "Tin cậy" nếu máy hỏi.\n\n' "$B" "$R"
+        printf '  Thiết bị Xcode đang biết:\n'
+        while IFS='|' read -r state name udid; do
+            [ -n "$udid" ] || continue
+            printf '    %s%-28s%s %s%s%s\n' "$B" "$name" "$R" "$DIM" "$state" "$R"
+        done < <(ios_devices)
+        pause; return 1
+    fi
+
+    choose_back "Chọn thiết bị iOS" "${names[@]}"
+    [ "$CHOICE" -lt 0 ] && return 1
+    IOSDEV=${udids[$CHOICE]}
+    IOSDEV_NAME=${names[$CHOICE]}
+    return 0
+}
+
+ios_run_device() {
+    ios_device_pick || return
+    run "Chạy iOS trên \"$IOSDEV_NAME\"" npm run ios -- --udid "$IOSDEV"
+}
+
 ios_run_pick() {
     ios_sim_pick || return
     run "Chạy iOS trên \"$SIM\"" npm run ios -- --simulator="$SIM"
@@ -740,6 +803,81 @@ ios_run_default() {
     else
         run "Chạy iOS (simulator mặc định)" npm run ios
     fi
+}
+
+# Archive thẳng bằng xcodebuild. Kết quả đặt trong thư mục Archives của Xcode
+# nên mở Window > Organizer là thấy ngay để Distribute App.
+ARCHIVE_PATH=''
+
+# Cài Pods nếu thiếu/cũ hơn Podfile.lock
+ios_pods_ready() {
+    if [ -d "$ROOT/ios/Pods" ] && [ ! "$ROOT/ios/Podfile.lock" -nt "$ROOT/ios/Pods" ]; then
+        return 0
+    fi
+    printf '  %sPods chưa cài hoặc đã cũ — chạy pod install...%s\n\n' "$YLW" "$R"
+    npm run pod-install || return 1
+    printf '\n'
+    return 0
+}
+
+# Đặt ARCHIVE_PATH = ~/Library/Developer/Xcode/Archives/<ngày>/<tên>.xcarchive
+ios_archive_path() {
+    local day dir name
+    day=$(date '+%Y-%m-%d')
+    name="${TDC_IOS_APP_NAME:-${TDC_APP_NAME:-Mattermost}} ${TDC_VERSION:-0} ($(date '+%H-%M'))"
+    dir="$HOME/Library/Developer/Xcode/Archives/$day"
+    mkdir -p "$dir" || return 1
+    ARCHIVE_PATH="$dir/$name.xcarchive"
+    return 0
+}
+
+ios_archive_exec() {
+    ( cd "$ROOT/ios" && xcodebuild \
+        -workspace Mattermost.xcworkspace \
+        -scheme Mattermost \
+        -configuration Release \
+        -destination 'generic/platform=iOS' \
+        -archivePath "$ARCHIVE_PATH" \
+        -allowProvisioningUpdates \
+        archive )
+}
+
+ios_archive_info() {
+    printf '  %sPhiên bản%s  %s (build %s)\n' "$DIM" "$R" "${TDC_VERSION:-?}" "${TDC_BUILD_NUMBER:-?}"
+    printf '  %sBundle ID%s  %s\n' "$DIM" "$R" "${TDC_IOS_BUNDLE_ID:-${TDC_PKG:-?}}"
+    printf '  %sArchive%s    %s\n\n' "$DIM" "$R" "$ARCHIVE_PATH"
+    printf '  %sXong thì mở Xcode > Window > Organizer để Distribute App.%s\n' "$DIM" "$R"
+}
+
+ios_archive() {
+    printf '\033[H\033[2J'
+    printf '%s  Archive iOS (xcodebuild)%s\n\n' "${B}${CYN}" "$R"
+    ios_pods_ready || { printf '\n%s  ✗ pod install thất bại.%s\n' "$RED" "$R"; pause; return 1; }
+    ios_archive_path || { printf '\n%s  ✗ không tạo được thư mục Archives.%s\n' "$RED" "$R"; pause; return 1; }
+    ios_archive_info
+    run "xcodebuild archive" ios_archive_exec
+    [ -d "$ARCHIVE_PATH" ]
+}
+
+# Chuẩn bị project rồi mở Xcode để tự Product > Archive.
+# Không build IPA ở đây: cấu hình (bundle id, version, build number, entitlements)
+# đã được apply_config ghi xuống project nên Xcode archive là khớp config.json.
+ios_xcode_archive() {
+    printf '\033[H\033[2J'
+    printf '%s  Chuẩn bị iOS để archive bằng Xcode%s\n\n' "${B}${CYN}" "$R"
+
+    ios_pods_ready || { printf '\n%s  ✗ pod install thất bại.%s\n' "$RED" "$R"; pause; return 1; }
+
+    printf '  %sPhiên bản%s  %s (build %s)\n' "$DIM" "$R" "${TDC_VERSION:-?}" "${TDC_BUILD_NUMBER:-?}"
+    printf '  %sBundle ID%s  %s\n\n' "$DIM" "$R" "${TDC_IOS_BUNDLE_ID:-${TDC_PKG:-?}}"
+
+    printf '  Trong Xcode:\n'
+    printf '    1. Chọn scheme %sMattermost%s, thiết bị %sAny iOS Device (arm64)%s\n' "$B" "$R" "$B" "$R"
+    printf '    2. %sProduct > Archive%s\n' "$B" "$R"
+    printf '    3. %sDistribute App%s trong Organizer\n\n' "$B" "$R"
+    printf '  %sLưu ý: tắt Metro trước khi archive (Release tự bundle JS).%s\n\n' "$DIM" "$R"
+
+    run "Mở ios/Mattermost.xcworkspace" open "$ROOT/ios/Mattermost.xcworkspace"
 }
 
 menu_debug() {
@@ -784,7 +922,7 @@ menu_debug() {
             16) ios_sim_open ;;
             17) apply_config && ios_run_default ;;
             18) apply_config && ios_run_pick ;;
-            19) apply_config && run "Chạy iOS trên thiết bị thật" npm run ios -- --device ;;
+            19) apply_config && ios_run_device ;;
             20) ios_trace ;;
         esac
     done
@@ -829,8 +967,8 @@ menu_build() {
             "AAB qua Fastlane (ANDROID_BUILD_TASK=bundle)" \
             "-" \
             "iOS cho simulator (npm run build:ios-sim)" \
-            "IPA              (npm run build:ios)" \
-            "IPA chưa ký      (npm run build:ios-unsigned)" \
+            "iOS: Archive luôn (xcodebuild) → Organizer  ← IPA lên App Store" \
+            "iOS: chỉ chuẩn bị + mở Xcode để tự Archive" \
             "-" \
             "Xem các file đã build"
         case $CHOICE in
@@ -844,8 +982,8 @@ menu_build() {
             8) apply_config && run_build "Fastlane: APK chưa ký" npm run build:android-unsigned ;;
             9) apply_config && run_build "Fastlane: AAB" env ANDROID_BUILD_TASK=bundle npm run build:android ;;
             11) apply_config && run_build "iOS cho simulator" npm run build:ios-sim ;;
-            12) apply_config && run_build "Fastlane: IPA" npm run build:ios ;;
-            13) apply_config && run_build "Fastlane: IPA chưa ký" npm run build:ios-unsigned ;;
+            12) apply_config && ios_archive ;;
+            13) apply_config && ios_xcode_archive ;;
             15) list_artifacts ;;
         esac
     done
@@ -1073,7 +1211,8 @@ Lệnh:
   ${B}apk-release${R}            APK release (gradlew assembleRelease)
   ${B}apk-arm64${R}              APK release chi arm64-v8a (nhanh ~3x, du cho may that)
   ${B}aab${R}                    AAB release (gradlew bundleRelease)
-  ${B}ipa${R}                    IPA qua Fastlane
+  ${B}archive${R}                archive iOS bằng xcodebuild vào thư mục Archives của Xcode
+  ${B}xcode${R}                  áp cấu hình + mở Xcode để tự Product > Archive
   ${B}ios-sim${R}                build iOS cho simulator
   ${B}emulator [tên]${R}         bật máy ảo Android rồi chờ khởi động xong
   ${B}avds${R}                   liệt kê máy ảo Android đã tạo
@@ -1126,14 +1265,23 @@ direct_config() {
 
 direct() {
     case $1 in
-        apk|apk-release|apk-arm64|aab|ipa|ios-sim|android|android-log|ios|metro) direct_config ;;
+        apk|apk-release|apk-arm64|aab|archive|xcode|ios-sim|android|android-log|ios|metro) direct_config ;;
     esac
     case $1 in
         apk)         direct_build bash -c "cd '$ROOT/android' && ./gradlew app:assembleDebug" ;;
         apk-release) direct_build bash -c "cd '$ROOT/android' && ./gradlew app:assembleRelease" ;;
         apk-arm64)   direct_build bash -c "cd '$ROOT/android' && ./gradlew app:assembleRelease -PreactNativeArchitectures=arm64-v8a" ;;
         aab)         direct_build bash -c "cd '$ROOT/android' && ./gradlew app:bundleRelease" ;;
-        ipa)         direct_build npm run build:ios ;;
+        archive)     trap - EXIT
+                     ios_pods_ready || exit 1
+                     ios_archive_path || exit 1
+                     ios_archive_info
+                     ios_archive_exec || exit 1
+                     printf '\n%s  ✓ %s%s\n' "$GRN" "$ARCHIVE_PATH" "$R"
+                     open -R "$ARCHIVE_PATH" ;;
+        xcode)       trap - EXIT
+                     [ -d "$ROOT/ios/Pods" ] || npm run pod-install || exit 1
+                     open "$ROOT/ios/Mattermost.xcworkspace" ;;
         ios-sim)     direct_build npm run build:ios-sim ;;
         android)     npm run android ;;
         ios)         npm run ios ;;

@@ -18,8 +18,15 @@ sun = master.crop(SUNBURST_BOX)
 
 written = []
 
+# Fastlane (REPLACE_ASSETS) copy de len project tu assets/base/release/icons/*,
+# nen phai ghi ca vao day, khong thi build qua Fastlane se tra icon ve Mattermost.
+REL_ANDROID = 'assets/base/release/icons/android'
+REL_IOS = 'assets/base/release/icons/ios'
 
-def save(im, path, keep_alpha=True):
+
+def save(im, path, keep_alpha=True, also=None):
+    if also:
+        save(im, also, keep_alpha)
     full = os.path.join(ROOT, path)
     os.makedirs(os.path.dirname(full), exist_ok=True)
     if keep_alpha:
@@ -59,18 +66,22 @@ def square(canvas, frac, bg=None, circle_bg=False, src=None):
 # Legacy icon: nen trang day, logo 88% chieu rong
 for dpi, size in [('mdpi', 48), ('hdpi', 72), ('xhdpi', 96), ('xxhdpi', 144), ('xxxhdpi', 192)]:
     save(square(size, 0.88, bg=WHITE),
-         f'android/app/src/main/res/mipmap-{dpi}/ic_launcher.png')
+         f'android/app/src/main/res/mipmap-{dpi}/ic_launcher.png',
+         also=f'{REL_ANDROID}/mipmap-{dpi}/ic_launcher.png')
     # Icon tron: logo phai nam gon trong duong tron -> 62%
     save(square(size, 0.62, bg=WHITE, circle_bg=True),
-         f'android/app/src/main/res/mipmap-{dpi}/ic_launcher_round.png')
+         f'android/app/src/main/res/mipmap-{dpi}/ic_launcher_round.png',
+         also=f'{REL_ANDROID}/mipmap-{dpi}/ic_launcher_round.png')
 
 # Adaptive icon: canvas 108dp, safe zone la duong tron 66dp o giua.
 # Logo ti le 2.07:1 vua khit trong duong tron do khi rong ~54% canvas -> khong bao gio bi cat.
 for dpi, size in [('mdpi', 108), ('hdpi', 162), ('xhdpi', 216), ('xxhdpi', 324), ('xxxhdpi', 432)]:
     save(square(size, 0.54),
-         f'android/app/src/main/res/mipmap-{dpi}/ic_launcher_foreground.png')
+         f'android/app/src/main/res/mipmap-{dpi}/ic_launcher_foreground.png',
+         also=f'{REL_ANDROID}/mipmap-{dpi}/ic_launcher_foreground.png')
     save(Image.new('RGBA', (size, size), WHITE),
-         f'android/app/src/main/res/mipmap-{dpi}/ic_launcher_background.png')
+         f'android/app/src/main/res/mipmap-{dpi}/ic_launcher_background.png',
+         also=f'{REL_ANDROID}/mipmap-{dpi}/ic_launcher_background.png')
 
 # ------------------------------------------- Android notification icon (status bar)
 # Android to lai icon status bar thanh don sac -> chi giu silhouette trang cua mat troi.
@@ -81,7 +92,8 @@ sun_white.paste((255, 255, 255), (0, 0) + sun.size, sun_mask)
 sun_white.putalpha(sun_mask)
 for dpi, size in [('mdpi', 22), ('hdpi', 33), ('xhdpi', 44), ('xxhdpi', 66), ('xxxhdpi', 88)]:
     save(square(size, 0.92, src=sun_white),
-         f'android/app/src/main/res/mipmap-{dpi}/ic_notification.png')
+         f'android/app/src/main/res/mipmap-{dpi}/ic_notification.png',
+         also=f'{REL_ANDROID}/mipmap-{dpi}/ic_notification.png')
 
 # ------------------------------------------------------------- Android splash
 for dpi, size in [('mdpi', 96), ('hdpi', 192), ('xhdpi', 288), ('xxhdpi', 384), ('xxxhdpi', 480)]:
@@ -105,7 +117,8 @@ for name, size in [
     ('Icon-60@2x.png', 120), ('Icon-60@3x.png', 180),
     ('iTunesArtwork@2x.png', 1024),
 ]:
-    save(square(size, 0.84, bg=WHITE), f'{IOS}/{name}', keep_alpha=False)
+    save(square(size, 0.84, bg=WHITE), f'{IOS}/{name}', keep_alpha=False,
+         also=f'{REL_IOS}/{name}')
 
 # -------------------------------------------------------------- iOS SplashIcon
 SPLASH = 'ios/Mattermost/Images.xcassets/SplashIcon.imageset'

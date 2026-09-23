@@ -148,3 +148,8 @@ detox/maestro/.maestro-test-env*.bak
 
 .e2e-debug/
 __pycache__/
+
+# APNs auth key / signing secrets — không bao giờ commit
+*.p8
+*.p12
+*.mobileprovision
