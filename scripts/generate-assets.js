@@ -6,8 +6,11 @@
 const fs = require('fs');
 const fsPath = require('path');
 
+const {toAppConfig} = require('./app_env');
+
 // Khoi "Build" trong config.json chi dung luc build (ten app, bundle id, keystore,
-// team id...). App khong doc no, va no khong nen di vao bundle, nen bi loai o day.
+// team id...). App khong doc no, va no khong nen di vao bundle, nen bi loai o day;
+// gia tri cua moi truong dang chon (Build.Environment / TDC_ENV) duoc tron vao config app.
 function stripBuildConfig(fileName, contents) {
     if (fileName !== 'config.json') {
         return contents;
@@ -17,8 +20,7 @@ function stripBuildConfig(fileName, contents) {
         if (json.Build === undefined) {
             return contents;
         }
-        delete json.Build;
-        return JSON.stringify(json);
+        return JSON.stringify(toAppConfig(json));
     } catch (e) {
         console.error('Failed to strip the Build section from ' + fileName);
         throw e;

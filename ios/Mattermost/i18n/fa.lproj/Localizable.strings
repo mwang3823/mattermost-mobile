@@ -346,7 +346,7 @@
 "mobile.action_menu.select" = "یک گزینه را انتخاب کنید";
 "mobile.add_team.join_team" = "پیوستن به تیم دیگر";
 "mobile.android.back_handler_exit" = "برای خروج دوباره دکمه Back را فشار دهید";
-"mobile.android.photos_permission_denied_title" = "Chathub ThaiDuongco می‌خواهد به عکس‌های شما دسترسی داشته باشد";
+"mobile.android.photos_permission_denied_title" = "Mattermost می‌خواهد به عکس‌های شما دسترسی داشته باشد";
 "mobile.announcement_banner.title" = "اطلاعیه";
 "mobile.calls_call_ended" = "تماس پایان یافت";
 "mobile.calls_call_screen" = "تماس";
@@ -392,7 +392,7 @@
 "mobile.calls_unmute" = "صدادار";
 "mobile.calls_viewing_screen" = "شما در حال مشاهده صفحه‌ی {name} هستید";
 "mobile.calls_you" = "(شما)";
-"mobile.camera_photo_permission_denied_title" = "Chathub ThaiDuongco می‌خواهد به دوربین شما دسترسی داشته باشد";
+"mobile.camera_photo_permission_denied_title" = "Mattermost می‌خواهد به دوربین شما دسترسی داشته باشد";
 "mobile.channel_info.alertNo" = "خیر";
 "mobile.channel_info.alertYes" = "بله";
 "mobile.channel_list.recent" = "اخیر";
@@ -445,7 +445,7 @@
 "mobile.gallery.title" = "{index} از {total}";
 "mobile.integration_selector.loading_channels" = "در حال دریافت کانال‌ها...";
 "mobile.integration_selector.loading_options" = "در حال دریافت امکانات...";
-"mobile.ios.photos_permission_denied_title" = "Chathub ThaiDuongco می‌خواهد به عکس‌های شما دسترسی داشته باشد";
+"mobile.ios.photos_permission_denied_title" = "Mattermost می‌خواهد به عکس‌های شما دسترسی داشته باشد";
 "mobile.join_channel.error" = "نتوانستیم به کانال {displayName} بپیوندیم.";
 "mobile.leave_and_join_confirmation" = "ترک و پیوستن";
 "mobile.link.error.text" = "نمی‌توان پیوند را باز کرد.";
@@ -577,7 +577,7 @@
 "mobile.server_url.invalid_format" = "URL باید با http:// یا https:// شروع شود";
 "mobile.session_expired.title" = "نشست منقضی شد";
 "mobile.set_status.dnd" = "مزاحم نشوید";
-"mobile.storage_permission_denied_title" = "Chathub ThaiDuongco می‌خواهد به فایل‌های شما دسترسی داشته باشد";
+"mobile.storage_permission_denied_title" = "Mattermost می‌خواهد به فایل‌های شما دسترسی داشته باشد";
 "mobile.suggestion.members" = "اعضا";
 "mobile.system_message.channel_archived_message" = "{username} کانال را بایگانی کرد";
 "mobile.system_message.channel_unarchived_message" = "{username} کانال را از بایگانی خارج کرد";

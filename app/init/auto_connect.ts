@@ -51,7 +51,10 @@ const toParams = (props: Record<string, unknown>): Record<string, string> => {
 export async function autoConnectToDefaultServer(props: LaunchProps, theme: Theme): Promise<ExpoRouterLaunchResult | undefined> {
     const displayName = LocalConfig.DefaultServerName;
 
-    const headRequest = await getServerUrlAfterRedirect(LocalConfig.DefaultServerUrl);
+    // sanitizeUrl upgrades http to https unless told otherwise; keep http for servers
+    // configured that way (e.g. the dev environment).
+    const useHttp = LocalConfig.DefaultServerUrl.startsWith('http://');
+    const headRequest = await getServerUrlAfterRedirect(LocalConfig.DefaultServerUrl, useHttp);
     if (!headRequest.url) {
         logDebug('autoConnectToDefaultServer: unable to resolve the server url');
         return undefined;

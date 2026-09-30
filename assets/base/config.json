@@ -34,12 +34,24 @@
     "EnableObservableProfiling": false,
 
     "Build": {
-        "_help": "Toàn bộ cấu hình build iOS/Android. Sửa ở đây rồi chạy ./tdc.sh — mọi lệnh build/run đều đọc file này trước; hoặc chạy trực tiếp \"node scripts/build_config.js --apply\". Giá trị dạng ${TÊN_BIẾN} được lấy từ biến môi trường lúc build. Khối \"Build\" chỉ dùng lúc build và bị loại khỏi dist/assets/config.json nên không đi vào app.",
+        "_help": "Toàn bộ cấu hình build iOS/Android. Sửa ở đây rồi chạy ./tdc.sh — mọi lệnh build/run đều đọc file này trước; hoặc chạy trực tiếp \"node scripts/build_config.js --apply\". Giá trị dạng ${TÊN_BIẾN} được lấy từ biến môi trường lúc build. Khối \"Build\" chỉ dùng lúc build và bị loại khỏi dist/assets/config.json nên không đi vào app. \"Environment\" chọn môi trường server trong \"Environments\" (giá trị của nó ghi đè lên cấu hình app); đổi nhanh bằng ./tdc.sh env <tên> hoặc đặt biến TDC_ENV=<tên> lúc build.",
+
+        "Environment": "dev",
+        "Environments": {
+            "prod": {
+                "DefaultServerUrl": "https://chat.thaiduongco.com",
+                "DefaultServerName": "TDC"
+            },
+            "dev": {
+                "DefaultServerUrl": "http://172.30.30.12:8065",
+                "DefaultServerName": "TDC Dev"
+            }
+        },
 
         "App": {
             "name": "Chathub ThaiDuongco",
             "scheme": "mattermost",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "buildNumber": 1
         },
 

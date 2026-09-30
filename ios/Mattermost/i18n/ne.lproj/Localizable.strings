@@ -120,10 +120,10 @@
 "mobile.action_menu.select" = "एउटा विकल्प छान्नुहोस्";
 "mobile.android.back_handler_exit" = "बाहिर निस्किन फेरि ब्याक थिच्नुहोस्";
 "mobile.android.photos_permission_denied_description" = "तपाईं म्याटरमोस्ट उदाहरणमा फोटोहरू अपलोड गर्नुहोस् वा तिनीहरूलाई तपाईंको उपकरणमा सेब गर्नुहोस्। तपाईं म्याटरमोस्टको फोटो लाइब्रेरीमा पढ्न र लेख्ने पहुँच प्रदान गर्न सेटिंग्स खोल्नुहोस्।";
-"mobile.android.photos_permission_denied_title" = "Chathub ThaiDuongco तपाइँको फोटोहरू को उपयोग गर्न चाहान्छ";
+"mobile.android.photos_permission_denied_title" = "Mattermost तपाइँको फोटोहरू को उपयोग गर्न चाहान्छ";
 "mobile.announcement_banner.title" = "घोषणा";
 "mobile.camera_photo_permission_denied_description" = "फोटोहरू लिनुहोस् र तिनीहरूलाई तपाईंको म्याटरमोस्ट उदाहरणमा अपलोड गर्नुहोस् वा तिनीहरूलाई तपाईंको उपकरणमा सेब गर्नुहोस्। तपाईंको क्यामेरामा म्याटरमोस्ट पढ्न र लेख्ने पहुँच प्रदान गर्न सेटिंग्स खोल्नुहोस्।";
-"mobile.camera_photo_permission_denied_title" = "Chathub ThaiDuongco तपाइँको क्यामेरा पहुँच गर्न चाहानुहुन्छ";
+"mobile.camera_photo_permission_denied_title" = "Mattermost तपाइँको क्यामेरा पहुँच गर्न चाहानुहुन्छ";
 "mobile.channel_info.alertNo" = "होईन";
 "mobile.channel_info.alertYes" = "हो";
 "mobile.channel_list.unreads" = "नपढेको";
@@ -157,7 +157,7 @@
 "mobile.files_paste.error_dismiss" = "खारेज गर्नुहोस्";
 "mobile.files_paste.error_title" = "पेस्ट फेल्ड";
 "mobile.ios.photos_permission_denied_description" = "तपाईंको म्याटरमोस्ट दृष्टान्तमा फोटो र भिडियोहरू अपलोड गर्नुहोस् वा तिनीहरूलाई तपाईंको उपकरणमा बचत गर्नुहोस्। तपाईंको फोटो र भिडियो लाइब्रेरीमा म्याटरमोस्ट पढ्न र लेख्ने पहुँच प्रदान गर्न सेटिंग्स खोल्नुहोस्।";
-"mobile.ios.photos_permission_denied_title" = "Chathub ThaiDuongco तपाइँको फोटो को उपयोग गर्न चाहान्छ";
+"mobile.ios.photos_permission_denied_title" = "Mattermost तपाइँको फोटो को उपयोग गर्न चाहान्छ";
 "mobile.join_channel.error" = "हामी च्यानल {displayName} मा सामेल हुन सकेनौं। कृपया तपाईंको जडान जाँच्नुहोस् र पुन: प्रयास गर्नुहोस्।";
 "mobile.managed.blocked_by" = "{vendor} द्वारा अवरुद्ध";
 "mobile.managed.exit" = "बाहिर निस्कनुहोस्";
@@ -224,7 +224,7 @@
 "mobile.server_url.invalid_format" = "युआरएल http:// वा https:// को साथ सुरु हुनुपर्छ";
 "mobile.set_status.dnd" = "बाधा नपुर्याउनुहोस्";
 "mobile.storage_permission_denied_description" = "तपाईंको म्याटरमोस्ट दृष्टान्तमा फाईलहरू अपलोड गर्नुहोस्। यस उपकरणमा फाईलहरूमा पहुँच पढ्नुहोस् र लेख्नुहोस् पहुँच गर्न म्याटरमोस्ट लाई अनुमति दिन सेटिंग्स खोल्नुहोस्।";
-"mobile.storage_permission_denied_title" = "Chathub ThaiDuongco तपाईंको फाईलहरू पहुँच गर्न चाहन्छ";
+"mobile.storage_permission_denied_title" = "Mattermost तपाईंको फाईलहरू पहुँच गर्न चाहन्छ";
 "mobile.suggestion.members" = "सदस्यहरू";
 "mobile.system_message.channel_archived_message" = "{username} ले च्यानल अभिलेख गर्यो";
 "mobile.system_message.channel_unarchived_message" = "{username} ले च्यानल अभिलेख गरेन";

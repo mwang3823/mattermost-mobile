@@ -18,6 +18,8 @@
 //   node scripts/build_config.js --gradle-args
 //   node scripts/build_config.js --fastlane-env <android|ios>
 //   node scripts/build_config.js --json
+//   node scripts/build_config.js --envs       # liệt kê môi trường server
+//   node scripts/build_config.js --env <tên>  # chọn môi trường (ghi Build.Environment)
 //
 
 'use strict';
@@ -25,6 +27,8 @@
 const {execFileSync} = require('child_process');
 const fs = require('fs');
 const path = require('path');
+
+const {selectedEnv, toAppConfig} = require('./app_env');
 
 const ROOT = path.resolve(__dirname, '..');
 const CONFIG_FILE = path.join(ROOT, 'assets/base/config.json');
@@ -104,6 +108,7 @@ function loadConfig() {
     const unresolved = new Set();
     const cfg = resolveValue(raw, unresolved);
     cfg.__raw = raw;
+    cfg.__env = selectedEnv(raw);
     cfg.__unresolved = [...unresolved];
     return cfg;
 }
@@ -120,6 +125,14 @@ function validate(cfg) {
             errors.push(msg);
         }
     };
+
+    const envs = b.Environments || {};
+    if (cfg.__env) {
+        need(Boolean(envs[cfg.__env]), `môi trường "${cfg.__env}" không có trong Build.Environments (${Object.keys(envs).join(', ')})`);
+    }
+    for (const [name, env] of Object.entries(envs)) {
+        need(/^https?:\/\/[^\s/]+/.test(String(env && env.DefaultServerUrl)), `Build.Environments.${name}.DefaultServerUrl phải là URL http(s)`);
+    }
 
     need(Boolean(b.App && b.App.name), 'Build.App.name không được để trống');
     need(SEMVER_RE.test(String(b.App && b.App.version)), 'Build.App.version phải dạng x.y.z');
@@ -490,8 +503,7 @@ function expectedDistConfig() {
     const base = JSON.parse(readFile('assets/base/config.json'));
     const overridePath = 'assets/override/config.json';
     const merged = fileExists(overridePath) ? Object.assign({}, base, JSON.parse(readFile(overridePath))) : base;
-    delete merged.Build;
-    return JSON.stringify(merged);
+    return JSON.stringify(toAppConfig(merged));
 }
 
 function distConfigStale() {
@@ -524,6 +536,7 @@ function printSummary(cfg) {
     line('Tên (iOS)', b.Ios.displayName);
     line('Phiên bản', `${b.App.version} (${b.App.buildNumber})`);
     line('URL scheme', `${b.App.scheme}, ${auth}, ${authDev}`);
+    line('Môi trường', envLabel(cfg));
     line('Server mặc định', `${cfg.DefaultServerName || '-'} — ${cfg.DefaultServerUrl || '-'}`);
 
     console.log(`\n${BLD}  Android${RST}`);
@@ -636,6 +649,30 @@ function apply(cfg, dryRun) {
     return count;
 }
 
+function envLabel(cfg) {
+    if (!cfg.__env) {
+        return '-';
+    }
+    // eslint-disable-next-line no-process-env
+    return process.env.TDC_ENV ? `${cfg.__env} (từ biến TDC_ENV)` : cfg.__env;
+}
+
+// Ghi Build.Environment vào config.json (giữ nguyên định dạng file)
+function setEnvironment(name) {
+    const raw = JSON.parse(fs.readFileSync(CONFIG_FILE, 'utf8'));
+    const envs = (raw.Build && raw.Build.Environments) || {};
+    if (!name || !envs[name]) {
+        fail(`môi trường "${name || ''}" không có trong Build.Environments (${Object.keys(envs).join(', ')})`);
+    }
+    const text = fs.readFileSync(CONFIG_FILE, 'utf8');
+    const re = /("Environment"\s*:\s*)"[^"]*"/;
+    if (!re.test(text)) {
+        fail('thiếu "Build.Environment" trong assets/base/config.json');
+    }
+    fs.writeFileSync(CONFIG_FILE, text.replace(re, `$1"${name}"`));
+    console.log(`  ${GRN}✓ môi trường: ${name} — ${envs[name].DefaultServerUrl}${RST}`);
+}
+
 // Xuất biến cho tdc.sh (bash eval được)
 function gradleArgs(cfg) {
     const sign = cfg.Build.Android.signing;
@@ -666,6 +703,8 @@ function printShell(cfg) {
         ['TDC_ANDROID_BUILD_TASK', b.Android.buildTask],
         ['TDC_KEYSTORE', b.Android.signing.storeFile],
         ['TDC_SERVER_URL', cfg.DefaultServerUrl],
+        ['TDC_ENV', cfg.__env],
+        ['TDC_ENVS', Object.keys(b.Environments || {}).join(' ')],
     ];
     for (const [k, v] of out) {
         console.log(`${k}=${q(v)}`);
@@ -685,13 +724,30 @@ function printShell(cfg) {
 
 function main() {
     const args = process.argv.slice(2);
+    if (args.includes('--env')) {
+        setEnvironment(args[args.indexOf('--env') + 1]);
+        return;
+    }
     const cfg = loadConfig();
     validate(cfg);
+
+    // Giá trị của môi trường đang chọn ghi đè lên cấu hình app (DefaultServerUrl...)
+    if (cfg.__env) {
+        Object.assign(cfg, cfg.Build.Environments[cfg.__env]);
+    }
+
+    if (args.includes('--envs')) {
+        for (const [name, env] of Object.entries(cfg.Build.Environments || {})) {
+            console.log(`${name === cfg.__env ? '*' : ' '} ${name.padEnd(8)} ${env.DefaultServerUrl}`);
+        }
+        return;
+    }
 
     if (args.includes('--json')) {
         const copy = {...cfg};
         delete copy.__raw;
         delete copy.__unresolved;
+        delete copy.__env;
         console.log(JSON.stringify(copy, null, 2));
         return;
     }

@@ -182,10 +182,10 @@
 "mobile.action_menu.select" = "ഒരു ഓപ്ഷൻ തിരഞ്ഞെടുക്കുക";
 "mobile.android.back_handler_exit" = "പുറത്തുകടക്കാൻ വീണ്ടും അമർത്തുക";
 "mobile.android.photos_permission_denied_description" = "നിങ്ങളുടെ മാറ്റർമോസ്റ്റ് ഇൻസ്‌റ്റൻസിലേക്ക് ഫോട്ടോകൾ അപ്‌ലോഡ് ചെയ്യുക അല്ലെങ്കിൽ അവ നിങ്ങളുടെ ഉപകരണത്തിൽ സംരക്ഷിക്കുക. നിങ്ങളുടെ ഫോട്ടോ ലൈബ്രറിയിലേക്ക് Mattermost Read and Write ആക്‌സസ് അനുവദിക്കുന്നതിന് ക്രമീകരണം തുറക്കുക.";
-"mobile.android.photos_permission_denied_title" = "Chathub ThaiDuongco നിങ്ങളുടെ ഫോട്ടോകൾ ആക്സസ് ചെയ്യാൻ ആഗ്രഹിക്കുന്നു";
+"mobile.android.photos_permission_denied_title" = "Mattermost നിങ്ങളുടെ ഫോട്ടോകൾ ആക്സസ് ചെയ്യാൻ ആഗ്രഹിക്കുന്നു";
 "mobile.announcement_banner.title" = "പ്രഖ്യാപനം";
 "mobile.camera_photo_permission_denied_description" = "ഫോട്ടോകൾ എടുത്ത് അവ നിങ്ങളുടെ മാറ്റർമോസ്‌റ്റിലേക്ക് അപ്‌ലോഡ് ചെയ്യുക അല്ലെങ്കിൽ നിങ്ങളുടെ ഉപകരണത്തിൽ സംരക്ഷിക്കുക. നിങ്ങളുടെ ക്യാമറയിലേക്ക് Mattermost Read and Write ആക്‌സസ് അനുവദിക്കുന്നതിന് ക്രമീകരണം തുറക്കുക.";
-"mobile.camera_photo_permission_denied_title" = "Chathub ThaiDuongco നിങ്ങളുടെ ക്യാമറ ആക്സസ് ചെയ്യാൻ ആഗ്രഹിക്കുന്നു";
+"mobile.camera_photo_permission_denied_title" = "Mattermost നിങ്ങളുടെ ക്യാമറ ആക്സസ് ചെയ്യാൻ ആഗ്രഹിക്കുന്നു";
 "mobile.channel_info.alertNo" = "അല്ല";
 "mobile.channel_info.alertYes" = "അതെ";
 "mobile.channel_list.unreads" = "വായിക്കാത്തവ";
@@ -223,7 +223,7 @@
 "mobile.files_paste.error_title" = "ഒട്ടിക്കാനായില്ല";
 "mobile.gallery.title" = "{total}-ന്റെ {index}";
 "mobile.ios.photos_permission_denied_description" = "ഫോട്ടോകളും വീഡിയോകളും നിങ്ങളുടെ മാറ്റർമോസ്റ്റ് ഇൻസ്‌റ്റൻസിലേക്ക് അപ്‌ലോഡ് ചെയ്യുക അല്ലെങ്കിൽ അവ നിങ്ങളുടെ ഉപകരണത്തിൽ സംരക്ഷിക്കുക. നിങ്ങളുടെ ഫോട്ടോ, വീഡിയോ ലൈബ്രറിയിലേക്ക് മാറ്റർമോസ്റ്റ് റീഡും റൈറ്റും ആക്‌സസ് അനുവദിക്കുന്നതിന് ക്രമീകരണം തുറക്കുക.";
-"mobile.ios.photos_permission_denied_title" = "Chathub ThaiDuongco നിങ്ങളുടെ ഫോട്ടോകൾ ആക്സസ് ചെയ്യാൻ ആഗ്രഹിക്കുന്നു";
+"mobile.ios.photos_permission_denied_title" = "Mattermost നിങ്ങളുടെ ഫോട്ടോകൾ ആക്സസ് ചെയ്യാൻ ആഗ്രഹിക്കുന്നു";
 "mobile.join_channel.error" = "ഞങ്ങൾക്ക് {displayName} ചാനലിൽ ചേരാനായില്ല. ദയവായി നിങ്ങളുടെ കണക്ഷൻ പരിശോധിച്ച് വീണ്ടും ശ്രമിക്കുക.";
 "mobile.link.error.text" = "ലിങ്ക് തുറക്കാനായില്ല.";
 "mobile.link.error.title" = "തെറ്റ്";

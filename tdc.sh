@@ -23,6 +23,8 @@ ACTIVITY=com.mattermost.rnbeta.MainActivity
 METRO_PORT=8081
 TDC_GRADLE_ARGS=''
 TDC_IOS_SIMULATOR=''
+TDC_ENV=${TDC_ENV:-}
+TDC_ENVS=''
 CONFIG_ERR=''
 
 # Đọc config.json rồi đặt các biến TDC_* (xem "build_config.js --shell")
@@ -114,6 +116,7 @@ status_refresh() {
     fi
 
     STATUS_L1="${B}${CYN}  ${name}${R}  ${DIM}v${ver} (${code})  ${branch}${R}"
+    [ -n "$TDC_ENV" ] && STATUS_L1="$STATUS_L1  ${B}${YLW}[${TDC_ENV}]${R} ${DIM}${TDC_SERVER_URL:-}${R}"
     STATUS_L2="  $metro  $devs  $rev"
     if [ -n "$CONFIG_ERR" ]; then
         STATUS_L2="$STATUS_L2  ${RED}config.json: ${CONFIG_ERR}${R}"
@@ -449,6 +452,34 @@ config_edit() {
     fi
     run "Áp dụng thay đổi vừa sửa" $CONFIG_TOOL --apply
     config_load
+}
+
+# ----------------------------------------------------------- môi trường server
+# Đổi Build.Environment trong config.json rồi sinh lại dist/assets (app đọc lúc chạy).
+# Build ra sau đó sẽ trỏ về server của môi trường vừa chọn.
+env_set() {
+    # Bỏ TDC_ENV (nếu có) để lựa chọn vừa ghi vào config.json có hiệu lực
+    unset TDC_ENV
+    $CONFIG_TOOL --env "$1" && $CONFIG_TOOL --apply >/dev/null && config_load || return 1
+    printf '  %sServer: %s%s\n' "$DIM" "$TDC_SERVER_URL" "$R"
+    printf '  %sApp đã cài vẫn giữ server cũ — gỡ app (hoặc xoá dữ liệu) rồi cài lại bản build mới.%s\n' "$YLW" "$R"
+}
+
+env_pick() {
+    local -a names labels
+    local line
+    while IFS= read -r line; do
+        [ -z "$line" ] && continue
+        names+=("$(printf '%s' "${line:2}" | awk '{print $1}')")
+        labels+=("$line")
+    done < <($CONFIG_TOOL --envs 2>/dev/null)
+    if [ ${#names[@]} -eq 0 ]; then
+        printf '\n%s  Chưa khai báo Build.Environments trong %s%s\n' "$RED" "$CONFIG_FILE" "$R"
+        pause; return
+    fi
+    choose_back "Môi trường server  (* = đang dùng)" "${labels[@]}"
+    [ "$CHOICE" -lt 0 ] && return
+    run "Chọn môi trường ${names[$CHOICE]}" env_set "${names[$CHOICE]}"
 }
 
 menu_config() {
@@ -1137,7 +1168,7 @@ menu_tools() {
             "-" \
             "Sửa lỗi build CXX1409 (xoá metadata CMake .cxx)" \
             "Chẩn đoán push notification (push_doctor.sh)" \
-            "Sinh lại icon từ tdc_logo.png" \
+            "Sinh lại icon từ tdchat_icon.png" \
             "Sinh lại splash cho bản release" \
             "Đồng bộ assets/base -> dist/assets" \
             "-" \
@@ -1183,17 +1214,19 @@ menu_main() {
             "Kiểm tra  (lint / tsc / test)" \
             "Thiết bị & Log" \
             "Cấu hình build  ($CONFIG_FILE)" \
+            "Môi trường server  (đang dùng: ${TDC_ENV:--})" \
             "Công cụ dự án" \
             "-" \
             "Thoát — đóng bảng điều khiển  (q)"
         case $CHOICE in
-            -1|7) printf '\n'; exit 0 ;;
+            -1|8) printf '\n'; exit 0 ;;
             0) menu_debug ;;
             1) menu_build ;;
             2) menu_check ;;
             3) menu_log ;;
             4) menu_config ;;
-            5) menu_tools ;;
+            5) env_pick ;;
+            6) menu_tools ;;
         esac
     done
 }
@@ -1234,6 +1267,8 @@ Lệnh:
   ${B}config${R}                 xem toàn bộ cấu hình build (assets/base/config.json)
   ${B}config-apply${R}           áp dụng cấu hình xuống project + sinh env Fastlane
   ${B}config-check${R}           kiểm tra project có khớp cấu hình (lệch thì exit 1)
+  ${B}env [tên]${R}              xem / chọn môi trường server (vd: env dev, env prod)
+                         build một lần với môi trường khác: TDC_ENV=dev ./tdc.sh apk
   ${B}artifacts${R}              liệt kê các file .apk/.aab/.ipa đã build
   ${B}fix-cxx${R}                xoá metadata CMake (.cxx) khi gặp lỗi CXX1409
   ${B}help${R}                   màn hình này
@@ -1330,6 +1365,8 @@ direct() {
         config)       trap - EXIT; $CONFIG_TOOL ;;
         config-apply) trap - EXIT; $CONFIG_TOOL --apply ;;
         config-check) trap - EXIT; $CONFIG_TOOL --check ;;
+        env)          trap - EXIT
+                      if [ -n "${2:-}" ]; then env_set "$2" || exit 1; else $CONFIG_TOOL --envs; fi ;;
         help|-h|--help) usage ;;
         *) printf '%sLệnh không hợp lệ: %s%s\n\n' "$RED" "$1" "$R"; usage; exit 1 ;;
     esac

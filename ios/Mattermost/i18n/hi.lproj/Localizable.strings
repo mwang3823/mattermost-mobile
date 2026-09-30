@@ -159,7 +159,7 @@
 "mobile.android.photos_permission_denied_title" = "{ApplicationName} आपकी तस्वीरों को एक्सेस करना चाहेगा";
 "mobile.announcement_banner.title" = "घोषणा";
 "mobile.camera_photo_permission_denied_description" = "फ़ोटो लें और उन्हें अपने Mattermost उदाहरण पर अपलोड करें या उन्हें अपने डिवाइस पर सहेजें। Mattermost पढ़ें और अपने कैमरे तक पहुंच लिखने के लिए सेटिंग्स खोलें।";
-"mobile.camera_photo_permission_denied_title" = "Chathub ThaiDuongco आपके कैमरे तक पहुंचना चाहेगा";
+"mobile.camera_photo_permission_denied_title" = "Mattermost आपके कैमरे तक पहुंचना चाहेगा";
 "mobile.channel_info.alertNo" = "नहीं";
 "mobile.channel_info.alertYes" = "हाँ";
 "mobile.channel_list.unreads" = "UNREADS";

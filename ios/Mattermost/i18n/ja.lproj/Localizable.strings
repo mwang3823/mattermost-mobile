@@ -498,8 +498,8 @@
 "mobile.action_menu.select_multiple" = "一つ以上のオプションを選択してください";
 "mobile.add_team.join_team" = "別のチームに参加する";
 "mobile.android.back_handler_exit" = "終了するにはもう一度戻るを押してください";
-"mobile.android.photos_permission_denied_description" = "サーバーへ写真をアップロードするか、デバイスに写真を保存します。設定を開き、Chathub ThaiDuongco にフォトライブラリへの読み込みと書き込みのアクセス権を付与してください。";
-"mobile.android.photos_permission_denied_title" = "Chathub ThaiDuongcoがフォトライブラリーへのアクセスを要求しています";
+"mobile.android.photos_permission_denied_description" = "サーバーへ写真をアップロードするか、デバイスに写真を保存します。設定を開き、Mattermost にフォトライブラリへの読み込みと書き込みのアクセス権を付与してください。";
+"mobile.android.photos_permission_denied_title" = "Mattermostがフォトライブラリーへのアクセスを要求しています";
 "mobile.announcement_banner.title" = "アナウンス";
 "mobile.calls_bluetooth" = "Bluetooth";
 "mobile.calls_call_ended" = "通話が終了しました";
@@ -611,8 +611,8 @@
 "mobile.calls_viewing_screen" = "{name} の画面を表示しています";
 "mobile.calls_you" = "(あなた)";
 "mobile.calls_you_2" = "あなた";
-"mobile.camera_photo_permission_denied_description" = "写真を撮影し、それらをサーバーへアップロードしたりデバイスに保存したりします。設定を開き、Chathub ThaiDuongco にカメラへの読み取りと書き込みのアクセス権を付与してください。";
-"mobile.camera_photo_permission_denied_title" = "Chathub ThaiDuongco があなたのカメラへアクセスしようとしています";
+"mobile.camera_photo_permission_denied_description" = "写真を撮影し、それらをサーバーへアップロードしたりデバイスに保存したりします。設定を開き、Mattermost にカメラへの読み取りと書き込みのアクセス権を付与してください。";
+"mobile.camera_photo_permission_denied_title" = "Mattermost があなたのカメラへアクセスしようとしています";
 "mobile.channel_add_members.error" = "エラーが発生したため、ユーザーをチャンネルに追加できませんでした。";
 "mobile.channel_info.alertNo" = "いいえ";
 "mobile.channel_info.alertYes" = "はい";
@@ -677,8 +677,8 @@
 "mobile.gallery.title" = "{index} / {total}";
 "mobile.integration_selector.loading_channels" = "チャンネルを読み込んでいます...";
 "mobile.integration_selector.loading_options" = "オプションを読み込んでいます...";
-"mobile.ios.photos_permission_denied_description" = "写真や動画をサーバーにアップロードしたり、デバイスに保存したりします。設定を開き、Chathub ThaiDuongco に写真とビデオライブラリーへの読み取りと書き込みのアクセス権を付与してください。";
-"mobile.ios.photos_permission_denied_title" = "Chathub ThaiDuongcoがフォトライブラリーへのアクセスを要求しています";
+"mobile.ios.photos_permission_denied_description" = "写真や動画をサーバーにアップロードしたり、デバイスに保存したりします。設定を開き、Mattermost に写真とビデオライブラリーへの読み取りと書き込みのアクセス権を付与してください。";
+"mobile.ios.photos_permission_denied_title" = "Mattermostがフォトライブラリーへのアクセスを要求しています";
 "mobile.join_channel.error" = "チャンネル {displayName} に参加できませんでした。";
 "mobile.leave_and_create_message" = "あなたは ~{leaveChannelName} のチャンネル通話に参加中です。現在の通話から抜け、~{joinChannelName}の新しい通話を開始しますか?";
 "mobile.leave_and_join_confirmation" = "脱退と参加";
@@ -854,8 +854,8 @@ Mattermost appを使用するにはサーバーのアップグレードが必要
 "mobile.set_status.dnd" = "取り込み中";
 "mobile.set_status.offline" = "オフライン";
 "mobile.set_status.online" = "オンライン";
-"mobile.storage_permission_denied_description" = "サーバーにファイルをアップロードします。設定を開き、Chathub ThaiDuongco にこのデバイスのファイルへの読み取りと書き込みのアクセス権を付与してください。";
-"mobile.storage_permission_denied_title" = "Chathub ThaiDuongco があなたのファイルへアクセスしようとしています";
+"mobile.storage_permission_denied_description" = "サーバーにファイルをアップロードします。設定を開き、Mattermost にこのデバイスのファイルへの読み取りと書き込みのアクセス権を付与してください。";
+"mobile.storage_permission_denied_title" = "Mattermost があなたのファイルへアクセスしようとしています";
 "mobile.suggestion.members" = "メンバー";
 "mobile.system_message.channel_archived_message" = "{username} がチャンネルをアーカイブしました";
 "mobile.system_message.channel_unarchived_message" = "{username} がチャンネルをアーカイブから復元しました";
@@ -868,7 +868,7 @@ Mattermost appを使用するにはサーバーのアップグレードが必要
 "mobile.system_message.update_channel_purpose_message.updated_to" = "{username} がチャンネルの目的を {newPurpose} へ更新しました";
 "mobile.tos_link" = "利用規約";
 "mobile.user_list.deactivated" = "無効";
-"mobile.write_storage_permission_denied_description" = "デバイスにファイルを保存します。設定を開き、Chathub ThaiDuongco にこのデバイスのファイルへの書き込みのアクセス権を付与してください。";
+"mobile.write_storage_permission_denied_description" = "デバイスにファイルを保存します。設定を開き、Mattermost にこのデバイスのファイルへの書き込みのアクセス権を付与してください。";
 "modal.manual_status.auto_responder.message_" = "あなたのステータスを \"{status}\" に変更し、自動返信を無効化してもよろしいですか？";
 "more_messages.text" = "{count} new {count, plural, one {メッセージ} other {メッセージ}}";
 "msg_typing.areTyping" = "{users}と{last}が入力しています...";
@@ -1274,7 +1274,7 @@ Mattermost appを使用するにはサーバーのアップグレードが必要
 "share_extension.channel_label" = "チャンネル";
 "share_extension.channels_screen.title" = "チャンネルを選択";
 "share_extension.count_limit" = "このサーバーでは、 {count, number} {count, plural, one {ファイル} other {ファイル}}しか共有できません";
-"share_extension.error_screen.description" = "Chathub ThaiDuongco にコンテンツを共有する際にエラーが発生しました。";
+"share_extension.error_screen.description" = "Mattermost にコンテンツを共有する際にエラーが発生しました。";
 "share_extension.error_screen.label" = "エラーが発生しました";
 "share_extension.error_screen.reason" = "理由: {reason}";
 "share_extension.file_limit.multiple" = "各ファイルは {size} 以下のサイズである必要があります";
@@ -1284,7 +1284,7 @@ Mattermost appを使用するにはサーバーのアップグレードが必要
 "share_extension.multiple_label" = "{count, number} 添付ファイル";
 "share_extension.server_label" = "サーバー";
 "share_extension.servers_screen.title" = "サーバーを選択する";
-"share_extension.share_screen.title" = "Chathub ThaiDuongco に共有する";
+"share_extension.share_screen.title" = "Mattermost に共有する";
 "share_extension.upload_disabled" = "選択したサーバーではファイルアップロードが無効化されています";
 "share_feedback.button.no" = "いいえ、結構です";
 "share_feedback.button.yes" = "はい";

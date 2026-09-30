@@ -162,8 +162,8 @@
 "mobile.account.settings.save" = "Запиши";
 "mobile.action_menu.select" = "Изберете опция";
 "mobile.android.back_handler_exit" = "Натиснете назад отново за изход";
-"mobile.android.photos_permission_denied_title" = "Chathub ThaiDuongco поиска достъп до снимките Ви";
-"mobile.camera_photo_permission_denied_title" = "Chathub ThaiDuongco поиска достъп до камерата Ви";
+"mobile.android.photos_permission_denied_title" = "Mattermost поиска достъп до снимките Ви";
+"mobile.camera_photo_permission_denied_title" = "Mattermost поиска достъп до камерата Ви";
 "mobile.channel_info.alertNo" = "Не";
 "mobile.channel_info.alertYes" = "Да";
 "mobile.commands.error_title" = "Грешка при изпълнение на командата";
@@ -196,7 +196,7 @@
 "mobile.files_paste.error_dismiss" = "Отхвърляне";
 "mobile.files_paste.error_title" = "Поставянето не бе успешно";
 "mobile.gallery.title" = "{index} от {total}";
-"mobile.ios.photos_permission_denied_title" = "Chathub ThaiDuongco би искал да получи достъп до вашите снимки";
+"mobile.ios.photos_permission_denied_title" = "Mattermost би искал да получи достъп до вашите снимки";
 "mobile.link.error.text" = "Неуспешно отваряне на връзка.";
 "mobile.link.error.title" = "Грешка";
 "mobile.managed.blocked_by" = "Блокиран от {vendor}";
@@ -264,7 +264,7 @@
 "mobile.server_url.empty" = "Моля, въведете валиден URL на сървъра";
 "mobile.server_url.invalid_format" = "URL адресът трябва да започва с http:// или https://";
 "mobile.set_status.dnd" = "Не безпокой";
-"mobile.storage_permission_denied_title" = "Chathub ThaiDuongco би искал да получи достъп до вашите файлове";
+"mobile.storage_permission_denied_title" = "Mattermost би искал да получи достъп до вашите файлове";
 "mobile.suggestion.members" = "Потребители";
 "mobile.system_message.channel_archived_message" = "{username} архивира канала";
 "mobile.system_message.channel_unarchived_message" = "{username} разархивира канала";

@@ -12,8 +12,7 @@ import {typography} from '@utils/typography';
 
 const brandLogo = require('@assets/images/tdc_logo.png');
 
-// Kich thuoc that cua phan noi dung trong tdc_logo.png (1691 x 818)
-const LOGO_ASPECT_RATIO = 1691 / 818;
+const LOGO_SIZE = 96;
 
 type Props = {
     additionalServer: boolean;
@@ -22,8 +21,8 @@ type Props = {
 
 const getStyleSheet = makeStyleSheetFromTheme((theme: Theme) => ({
     logo: {
-        width: 220,
-        aspectRatio: LOGO_ASPECT_RATIO,
+        width: LOGO_SIZE,
+        height: LOGO_SIZE,
         marginBottom: 8,
     },
     textContainer: {
