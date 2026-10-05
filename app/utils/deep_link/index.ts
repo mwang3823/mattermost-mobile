@@ -27,9 +27,9 @@ import EphemeralStore from '@store/ephemeral_store';
 import {NavigationStore} from '@store/navigation_store';
 import {alertErrorWithFallback, errorBadChannel, errorUnkownUser} from '@utils/draft';
 import {getIntlShape} from '@utils/general';
-import {logError} from '@utils/log';
+import {logDebug, logError} from '@utils/log';
 import {escapeRegex} from '@utils/markdown';
-import {addNewServer} from '@utils/server';
+import {addNewServer, canSwitchServers} from '@utils/server';
 import {removeProtocol, stripTrailingSlashes} from '@utils/url';
 import {
     TEAM_NAME_PATH_PATTERN,
@@ -67,6 +67,10 @@ export async function handleDeepLink(deepLink: DeepLinkWithData, intlShape?: Int
             if (NavigationStore.getVisibleScreen() === Screens.SERVER) {
                 updateParams({serverUrl: deepLink.data.serverUrl});
             } else if (!NavigationStore.getScreensInStack().includes(Screens.SERVER)) {
+                if (!canSwitchServers()) {
+                    logDebug('handleDeepLink: adding another server is not allowed, ignoring the deep link');
+                    return {error: true};
+                }
                 addNewServer(theme, deepLink.data.serverUrl, undefined, deepLink);
             }
             return {error: false};

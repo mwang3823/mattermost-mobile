@@ -29,6 +29,7 @@ import {loginOptions} from '@utils/server';
 import {changeOpacity, makeStyleSheetFromTheme} from '@utils/theme';
 import {getServerUrlAfterRedirect, isValidUrl, sanitizeUrl} from '@utils/url';
 
+import ServerConnectionStatus from './connection_status';
 import ServerForm from './form';
 import ServerHeader from './header';
 
@@ -80,6 +81,7 @@ const Server = ({
     const intl = useIntl();
     const managedConfig = useManagedConfig<ManagedConfig>();
     const [connecting, setConnecting] = useState(false);
+    const [attempted, setAttempted] = useState(false);
     const [displayName, setDisplayName] = useState<string>('');
     const [buttonDisabled, setButtonDisabled] = useState(true);
     const [preauthSecret, setPreauthSecret] = useState<string>('');
@@ -97,6 +99,12 @@ const Server = ({
     const disableServerUrl = Boolean(
         (managedConfig?.allowOtherServers === 'false' && managedConfig?.serverUrl) ||
         (LocalConfig.AutoSelectServerUrl && LocalConfig.DefaultServerUrl && !additionalServer),
+    );
+
+    // When the app is pinned to the default server there is nothing for the user to fill in,
+    // so the form is replaced by the connection status with a retry action.
+    const pinnedToDefaultServer = Boolean(
+        LocalConfig.AutoSelectServerUrl && LocalConfig.DefaultServerUrl && LocalConfig.DefaultServerName && !additionalServer,
     );
 
     const animatedStyles = useScreenTransitionAnimation(animated);
@@ -234,6 +242,8 @@ const Server = ({
             return;
         }
 
+        setAttempted(true);
+
         const serverUrl = typeof manualUrl === 'string' ? manualUrl : url;
         if (!serverUrl || serverUrl.trim() === '') {
             setUrlError(formatMessage(defaultServerUrlMessage));
@@ -265,6 +275,10 @@ const Server = ({
         }
 
         pingServer(serverUrl);
+    };
+
+    const handleRetry = () => {
+        handleConnect(url || managedConfig?.serverUrl || LocalConfig.DefaultServerUrl);
     };
 
     const handleDisplayNameTextChanged = useCallback((text: string) => {
@@ -449,27 +463,38 @@ const Server = ({
                 >
                     <ServerHeader
                         additionalServer={additionalServer}
+                        pinnedToDefaultServer={pinnedToDefaultServer}
                         theme={theme}
                     />
-                    <ServerForm
-                        autoFocus={additionalServer}
-                        buttonDisabled={buttonDisabled}
-                        connecting={connecting}
-                        displayName={displayName}
-                        displayNameError={displayNameError}
-                        disableServerUrl={disableServerUrl}
-                        handleConnect={handleConnect}
-                        handleDisplayNameTextChanged={handleDisplayNameTextChanged}
-                        handlePreauthSecretTextChanged={handlePreauthSecretTextChanged}
-                        handleUrlTextChanged={handleUrlTextChanged}
-                        preauthSecret={preauthSecret}
-                        preauthSecretError={preauthSecretError}
-                        setShowAdvancedOptions={setShowAdvancedOptions}
-                        showAdvancedOptions={showAdvancedOptions}
-                        theme={theme}
-                        url={url}
-                        urlError={urlError}
-                    />
+                    {pinnedToDefaultServer ? (
+                        <ServerConnectionStatus
+                            attempted={attempted}
+                            connecting={connecting}
+                            error={urlError ?? displayNameError ?? preauthSecretError}
+                            onRetry={handleRetry}
+                            theme={theme}
+                        />
+                    ) : (
+                        <ServerForm
+                            autoFocus={additionalServer}
+                            buttonDisabled={buttonDisabled}
+                            connecting={connecting}
+                            displayName={displayName}
+                            displayNameError={displayNameError}
+                            disableServerUrl={disableServerUrl}
+                            handleConnect={handleConnect}
+                            handleDisplayNameTextChanged={handleDisplayNameTextChanged}
+                            handlePreauthSecretTextChanged={handlePreauthSecretTextChanged}
+                            handleUrlTextChanged={handleUrlTextChanged}
+                            preauthSecret={preauthSecret}
+                            preauthSecretError={preauthSecretError}
+                            setShowAdvancedOptions={setShowAdvancedOptions}
+                            showAdvancedOptions={showAdvancedOptions}
+                            theme={theme}
+                            url={url}
+                            urlError={urlError}
+                        />
+                    )}
                     <View style={styles.appVersionContainer}>
                         <AppVersion
                             textStyle={styles.appInfo}

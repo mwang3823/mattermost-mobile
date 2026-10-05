@@ -16,6 +16,7 @@ const LOGO_SIZE = 96;
 
 type Props = {
     additionalServer: boolean;
+    pinnedToDefaultServer: boolean;
     theme: Theme;
 };
 
@@ -24,6 +25,9 @@ const getStyleSheet = makeStyleSheetFromTheme((theme: Theme) => ({
         width: LOGO_SIZE,
         height: LOGO_SIZE,
         marginBottom: 8,
+    },
+    pinnedContainer: {
+        alignItems: 'center',
     },
     textContainer: {
         marginBottom: 32,
@@ -52,7 +56,7 @@ const getStyleSheet = makeStyleSheetFromTheme((theme: Theme) => ({
     },
 }));
 
-const ServerHeader = ({additionalServer, theme}: Props) => {
+const ServerHeader = ({additionalServer, pinnedToDefaultServer, theme}: Props) => {
     const isTablet = useIsTablet();
     const styles = getStyleSheet(theme);
 
@@ -74,6 +78,25 @@ const ServerHeader = ({additionalServer, theme}: Props) => {
                 style={[styles.connect, isTablet ? styles.connectTablet : undefined]}
                 testID='server_header.title.connect_to_server'
             />
+        );
+    }
+
+    if (pinnedToDefaultServer) {
+        return (
+            <View style={[styles.textContainer, styles.pinnedContainer]}>
+                <Image
+                    source={brandLogo}
+                    style={styles.logo}
+                    contentFit='contain'
+                    testID='server_header.logo'
+                />
+                <FormattedText
+                    defaultMessage='Welcome'
+                    id='mobile.components.select_server_view.msg_welcome'
+                    testID='server_header.welcome'
+                    style={styles.welcome}
+                />
+            </View>
         );
     }
 

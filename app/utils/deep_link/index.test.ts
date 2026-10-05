@@ -20,7 +20,7 @@ import {navigateToRoot} from '@screens/navigation';
 import {NavigationStore} from '@store/navigation_store';
 import TestHelper from '@test/test_helper';
 import {logError} from '@utils/log';
-import {addNewServer} from '@utils/server';
+import {addNewServer, canSwitchServers} from '@utils/server';
 
 import {alertErrorWithFallback, errorBadChannel, errorUnkownUser} from '../draft';
 
@@ -66,6 +66,7 @@ jest.mocked(NavigationStore.getVisibleScreen).mockReturnValue(Screens.HOME);
 
 jest.mock('@utils/server', () => ({
     addNewServer: jest.fn(),
+    canSwitchServers: jest.fn(() => true),
 }));
 
 jest.mock('@actions/remote/channel', () => ({
@@ -133,6 +134,15 @@ describe('parseAndHandleDeepLink', () => {
             url: 'https://newserver.com/team/channels/town-square',
         });
         expect(result).toEqual({error: false});
+    });
+
+    it('should not add a new server when switching servers is not allowed', async () => {
+        jest.mocked(getActiveServerUrl).mockResolvedValueOnce('https://currentserver.com');
+        jest.mocked(DatabaseManager.searchUrl).mockReturnValueOnce('');
+        jest.mocked(canSwitchServers).mockReturnValueOnce(false);
+        const result = await parseAndHandleDeepLink('https://newserver.com/team/channels/town-square');
+        expect(addNewServer).not.toHaveBeenCalled();
+        expect(result).toEqual({error: true});
     });
 
     it('should handle existing server and switch to home screen', async () => {

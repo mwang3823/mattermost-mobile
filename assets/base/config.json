@@ -43,15 +43,15 @@
                 "DefaultServerName": "TDC"
             },
             "dev": {
-                "DefaultServerUrl": "http://172.30.30.12:8065",
+                "DefaultServerUrl": "https://chat2.thaiduongco.com",
                 "DefaultServerName": "TDC Dev"
             }
         },
 
         "App": {
-            "name": "Chathub ThaiDuongco",
+            "name": "TD Chat",
             "scheme": "mattermost",
-            "version": "1.0.1",
+            "version": "1.0.2",
             "buildNumber": 1
         },
 
@@ -91,7 +91,7 @@
         },
 
         "Ios": {
-            "displayName": "Chathub ThaiDuongco",
+            "displayName": "TD Chat",
             "bundleId": "com.thaiduongco.chat",
             "shareExtensionBundleId": "com.thaiduongco.chat.MattermostShare",
             "notificationServiceBundleId": "com.thaiduongco.chat.NotificationService",

@@ -1,6 +1,6 @@
 <div align="center">
 
-# Chathub ThaiDuongco
+# TD Chat
 
 **Ứng dụng chat nội bộ của Thái Dương — bản mobile, xây trên Mattermost Mobile v2**
 
@@ -166,7 +166,7 @@ chạy được trên bash 3.2 mặc định của macOS.
 ### 6.1 Giao diện
 
 ```
-  Chathub ThaiDuongco  v1.0.0 (1)  release-2.44
+  TD Chat  v1.0.0 (1)  release-2.44
   Metro đang chạy  emulator-5554  đã reverse
   ────────────────────────────────────────────────────────────
 
@@ -188,7 +188,7 @@ chạy được trên bash 3.2 mặc định của macOS.
 
 | Thành phần | Ý nghĩa |
 |---|---|
-| `Chathub ThaiDuongco v1.0.0 (1)` | Tên app, version, build number — đọc từ `config.json` |
+| `TD Chat v1.0.0 (1)` | Tên app, version, build number — đọc từ `config.json` |
 | `release-2.44` | Nhánh git hiện tại |
 | `Metro đang chạy` / `Metro tắt` | Có tiến trình nào giữ cổng 8081 không |
 | `emulator-5554` | Các thiết bị `adb` đang kết nối |
