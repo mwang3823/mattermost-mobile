@@ -5,13 +5,10 @@
     "DefaultServerName": "TDC",
     "TestServerUrl": "http://localhost:8065",
     "AutoSelectServerUrl": true,
-
     "WebsiteURL": "https://thaiduongco.com",
     "ServerNoticeURL": "https://github.com/mattermost/mattermost-server/blob/master/NOTICE.txt",
     "MobileNoticeURL": "https://github.com/mattermost/mattermost-mobile/blob/master/NOTICE.txt",
-
     "RudderApiKey": "",
-
     "SentryEnabled": false,
     "SentryDsnIos": "",
     "SentryDsnAndroid": "",
@@ -21,40 +18,32 @@
             "xhr": false,
             "console": true
         },
-        "severityLevelFilter": ["fatal"]
+        "severityLevelFilter": [
+            "fatal"
+        ]
     },
-
     "ShowReview": false,
     "ShowOnboarding": false,
-
     "ExperimentalNormalizeMarkdownLinks": false,
     "CustomRequestHeaders": {},
     "CollectNetworkMetrics": false,
     "EnablePostListPerformance": false,
     "EnableObservableProfiling": false,
-
     "Build": {
         "_help": "Toàn bộ cấu hình build iOS/Android. Sửa ở đây rồi chạy ./tdc.sh — mọi lệnh build/run đều đọc file này trước; hoặc chạy trực tiếp \"node scripts/build_config.js --apply\". Giá trị dạng ${TÊN_BIẾN} được lấy từ biến môi trường lúc build. Khối \"Build\" chỉ dùng lúc build và bị loại khỏi dist/assets/config.json nên không đi vào app. \"Environment\" chọn môi trường server trong \"Environments\" (giá trị của nó ghi đè lên cấu hình app); đổi nhanh bằng ./tdc.sh env <tên> hoặc đặt biến TDC_ENV=<tên> lúc build.",
-
         "Environment": "prod",
         "Environments": {
             "prod": {
                 "DefaultServerUrl": "https://chat.thaiduongco.com",
                 "DefaultServerName": "TDC"
-            },
-            "dev": {
-                "DefaultServerUrl": "https://chat2.thaiduongco.com",
-                "DefaultServerName": "TDC Dev"
             }
         },
-
         "App": {
             "name": "TD Chat",
             "scheme": "mattermost",
-            "version": "1.0.3",
-            "buildNumber": 2
+            "version": "1.0.4",
+            "buildNumber": 3
         },
-
         "Android": {
             "applicationId": "com.thaiduongco.chat",
             "javaPackage": "com.mattermost.rnbeta",
@@ -89,7 +78,6 @@
                 "validateOnly": true
             }
         },
-
         "Ios": {
             "displayName": "TD Chat",
             "bundleId": "com.thaiduongco.chat",
@@ -109,7 +97,6 @@
                 "clientId": ""
             }
         },
-
         "Sentry": {
             "org": "",
             "projectIos": "",
@@ -117,11 +104,9 @@
             "url": "https://sentry.io",
             "authToken": "${SENTRY_AUTH_TOKEN}"
         },
-
         "Dev": {
             "metroPort": 8081
         },
-
         "Fastlane": {
             "replaceAssets": true,
             "buildForRelease": true,
